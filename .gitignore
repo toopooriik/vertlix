@@ -1,0 +1,46 @@
+################################
+# Node.js / Next.js
+################################
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+AGENTS.md
+CLAUDE.md
+frontend/AGENTS.md
+frontend/CLAUDE.md
+################################
+# Symfony / PHP
+################################
+backend/vendor/
+backend/var/
+backend/.env.local
+backend/.env.*.local
+
+################################
+# Local Deploy / Docker
+################################
+.docker/
+
+################################
+# Env files (секреты)
+################################
+.env.local
+.env.*.local
+
+################################
+# Logs
+################################
+*.log
+
+################################
+# IDE
+################################
+.vscode/
+.idea/
+
+################################
+# OS
+################################
+.DS_Store
+Thumbs.db
