@@ -1,0 +1,54 @@
+@mixin adaptive($breakpoint) {
+  @if $breakpoint == mobile {
+    @media (max-width: 480px) {
+      @content
+    }
+  } @else if $breakpoint == table {
+    @media (min-width: 480px) and (max-width: 1024px) {
+      @content
+    }
+  } @else if desktop {
+    @media (max-width: 1920px) {
+      @content
+    }
+  }
+}
+
+@mixin flex-centre {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+@mixin row-flex-between{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+@mixin col-flex-between{
+  display: flex;
+  justify-content: center;
+  align-content: space-between;
+}
+@mixin padding-m {
+  padding: 0 16px;
+}
+
+@mixin padding-t {
+  padding: 0 40px;
+}
+
+@mixin padding-d {
+  padding: 0 120px;
+}
+@mixin firts-layer{
+  z-index: 100;
+}
+@mixin second-layer{
+  z-index: 500;
+}
+@mixin super-layer{
+  z-index: 700;
+}
+@mixin mega-layer{
+  z-index: 800;
+}
