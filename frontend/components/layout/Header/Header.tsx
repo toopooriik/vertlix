@@ -10,7 +10,7 @@ export default function Header() {
             <div className={style.header__logo}>
                 <Image
                     src='/veltrix-logo.svg'
-                    alt='Veltrix'
+                    alt='Veltrix-logo'
                     width={170}
                     height={80}
                 />

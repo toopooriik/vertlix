@@ -1,3 +1,4 @@
+@use './variables' as *;
 @mixin adaptive($breakpoint) {
   @if $breakpoint == mobile {
     @media (max-width: 480px) {
@@ -21,13 +22,15 @@
 }
 @mixin row-flex-between{
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
 }
 @mixin col-flex-between{
   display: flex;
-  justify-content: center;
-  align-content: space-between;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
 }
 @mixin padding-m {
   padding: 0 16px;
@@ -51,4 +54,8 @@
 }
 @mixin mega-layer{
   z-index: 800;
+}
+
+@mixin border{
+  border: 1px solid rgba($main-color, 0.3);
 }

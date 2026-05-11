@@ -1,4 +1,4 @@
 export interface LinkType{
-    label: string;
-    href: string;
+    label: string,
+    href: string,
 }
