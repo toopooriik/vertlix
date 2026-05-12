@@ -84,12 +84,13 @@ const categories: CategoryType[] = [
 ]
 
 export default function Slider() {
-    const container = useRef(null);
-    const card = useRef(null);
-    const prevBtn = useRef(null);
-    const nextBtn = useRef(null)
+    const container = useRef<HTMLDivElement>(null!);
+    const card = useRef<HTMLDivElement>(null!);
+    const prevBtn = useRef<any>(null!);
+    const nextBtn = useRef<any>(null!)
     const [transform, setTransform] = useState(0);
 
+    container.current as HTMLElement
     function offsetCalculation():number{
         const styles = window.getComputedStyle(container.current);
         const gap:number = parseInt(styles.gap) || 0;
@@ -103,7 +104,7 @@ export default function Slider() {
         const length:number = offsetCalculation();
         const maxTranslate =
             container.current.scrollWidth -
-            container.current.parentElement.offsetWidth;
+            container.current.parentElement!.offsetWidth;
         if (-maxTranslate >  transform-length){
             setTransform(-maxTranslate)
             nextBtn.current.disabled = true;
@@ -127,7 +128,7 @@ export default function Slider() {
         if(container.current){
             container.current.style.transform = `translateX(${transform}px)`;
         }
-    }, [transform])
+    }, [transform]);
     return (
         <>
             <FontAwesomeIcon icon={faArrowLeft} className={style.slider__arrow_left} onClick={prev} ref={prevBtn}/>
