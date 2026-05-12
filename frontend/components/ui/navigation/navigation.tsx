@@ -19,21 +19,17 @@ const navLinks: LinkType[] = [
         href: '/catalog',
     },
     {
-        label: 'Подбор',
-        href: '/selection',
-    },
-    {
-        label: 'Сравнение',
-        href: '/comparison',
-    },
-    {
         label: 'О сервисе',
         href: '/about',
     },
     {
+        label: 'Контакты',
+        href: '/contacts',
+    },
+    {
         label: 'FAQ',
         href: '/FAQ',
-    }
+    },
 ];
 export default function Navigation(){
     const [isMenuOpen, setIsMenuOpen] = useState(false);
