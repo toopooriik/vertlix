@@ -1,0 +1,104 @@
+@use '@/styles/mixins' as *;
+@use '@/styles/variables' as *;
+
+.slider{
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  &__conteiner{
+    max-width: 1080px;
+    width: 100%;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    transition: transform 0.3s ease;
+  }
+  &__arrow_left{
+    position: absolute;
+    top: 60%;
+    left: 2%;
+    color: $alt-color;
+    font-size: 34px;
+    line-height: 34px;
+  }
+  &__arrow_right{
+    position: absolute;
+    top: 60%;
+    right: 2%;
+    color: $alt-color;
+    font-size: 34px;
+    line-height: 34px;
+  }
+  &__card{
+    max-width: 320px;
+    width: 100%;
+    min-height: 350px;
+    flex-basis: 320px;
+    flex-shrink: 0;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: $white;
+    border-radius: 22px;
+  }
+  &__card_title{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  &__card_name{
+    font-size: 1.3rem;
+    line-height: 1.3em;
+  }
+  &__card_description{
+    font-weight: 700;
+  }
+  &__card_link, &__card_link_arrow{
+    color: $alt-color;
+    transition: color 0.1s ease;
+  }
+  &__card_link:hover, &__card_link:hover &__card_link_arrow{
+    color: $main-color;
+  }
+
+  @include adaptive(table){
+    &__arrow_left{
+      font-size: 25px;
+      line-height: 25px;
+    }
+    &__arrow_right{
+      font-size: 25px;
+      line-height: 25px;
+    }
+  }
+  @include adaptive(mobile){
+    &__conteiner{
+      gap: 60px;
+    }
+    &__card{
+      max-width: 250px;
+      width: 100%;
+      min-height: 350px;
+      flex-basis: 250px;
+      flex-shrink: 0;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background-color: $white;
+      border-radius: 22px;
+    }
+    &__arrow_left{
+      left: 1%;
+      font-size: 20px;
+      line-height: 20px;
+    }
+    &__arrow_right{
+      right: 1%;
+      font-size: 20px;
+      line-height: 20px;
+    }
+  }
+}

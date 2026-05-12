@@ -1,0 +1,41 @@
+@use '@/styles/mixins' as *;
+@use '@/styles/variables' as *;
+
+.catalog{
+  &__content{
+    max-width: 1320px;
+    width: 100%;
+    padding: 60px 75px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    background-color: $main-color;
+    border-radius: 32px;
+    position: relative;
+  }
+  &__title{
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  &__name{
+    color: $white;
+    font-size: 2.5rem;
+    line-height: 2.5rem;
+  }
+  &__description{
+    color: $white;
+    font-weight: 300;
+  }
+
+  @include adaptive(table){
+    &__content{
+      padding: 40px 55px;
+    }
+  }
+  @include adaptive(mobile){
+    &__content{
+      padding: 20px 35px;
+    }
+  }
+}
