@@ -1,0 +1,168 @@
+@use '@/styles/mixins' as *;
+@use '@/styles/variables' as *;
+
+.open{
+  transform: rotate(0deg) !important;
+}
+
+.FAQ{
+  width: 100%;
+  &__content{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 16px;
+  }
+  &__title{
+
+  }
+  &__name{
+    font-size: 2.5rem;
+    line-height: 2.5rem;
+  }
+  &__description{
+    font-size: 1.3rem;
+    line-height: 1.3rem;
+  }
+  &__questions{
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+  }
+  &__question_block{
+    @include border;
+    display: flex;
+    flex-direction: column;
+    background-color: $white;
+    padding: 15px 35px;
+    border-radius: 20px;
+    transition: all 0.3s ease-in-out;
+  }
+  &__questions_top{
+    @include row-flex-between;
+    height: 40px;
+
+  }
+  &__question{
+    font-size: 1.2rem;
+    line-height: 1.2rem;
+  }
+  &__close_open{
+    position: relative;
+    width: 15px;
+    height: 15px;
+  }
+  &__horizontal, &__vertical{
+    position: absolute;
+    width: 100%;
+    height: 3px;
+    background-color: $alt-color;
+    border-radius: 15px;
+    top: 50%;
+    left: 50%;
+    font-size: 25px;
+    transition: transform 0.3s ease-in-out;
+  }
+  &__vertical{
+    transform: rotate(90deg);
+  }
+  &__horizontal{
+    position: absolute;
+  }
+  &__question_bottom{
+    display: flex;
+    align-items: center;
+    height: 40px;
+  }
+  &__answer{
+
+  }
+  @include adaptive(table){
+
+    &__content{
+
+    }
+    &__title{
+
+    }
+    &__name{
+
+    }
+    &__description{
+
+    }
+    &__questions{
+
+    }
+    &__question_block{
+
+    }
+    &__questions_top{
+      min-height: 40px;
+      height: 100%;
+    }
+    &__question{
+
+    }
+    &__close_open{
+
+    }
+    &__vertical{
+
+    }
+    &__horizontal{
+
+    }
+    &__question_bottom{
+      min-height: 40px;
+      height: 100%;
+    }
+    &__answer{
+
+    }
+  }
+  @include adaptive(mobile){
+
+    &__content{
+
+    }
+    &__title{
+
+    }
+    &__name{
+
+    }
+    &__description{
+
+    }
+    &__questions{
+
+    }
+    &__question_block{
+
+    }
+    &__questions_top{
+      min-height: 20px;
+      height: 100%;
+    }
+    &__question{
+
+    }
+    &__close_open{
+
+    }
+    &__vertical{
+
+    }
+    &__horizontal{
+
+    }
+    &__question_bottom{
+      min-height: 20px;
+      height: 100%;
+    }
+    &__answer{
+
+    }
+  }
+}
