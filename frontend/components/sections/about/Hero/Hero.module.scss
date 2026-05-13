@@ -1,0 +1,70 @@
+@use '@/styles/mixins' as *;
+@use '@/styles/variables' as *;
+
+.hero{
+
+  &__content{
+    @include flex-centre;
+    height: 425px;
+    background-color: $white;
+    border-radius: 28px;
+    padding: 100px 25px;
+    gap: 5px;
+  }
+  &__title{
+    font-size: 3.5rem;
+    line-height: 3.5rem;
+    text-align: end;
+    width: 50%;
+  }
+  &__line{
+    width: 3px;
+    height: 100%;
+    background-color: $main-color;
+    border-radius: 100px;
+  }
+  &__description{
+    font-size: 1.3rem;
+    line-height: 1.3rem;
+    width: 50%;
+  }
+  @include adaptive(table){
+
+    &__content{
+      padding: 50px 15px;
+    }
+    &__title{
+      font-size: 1.8rem;
+      line-height: 1.8rem;
+    }
+    &__line{
+
+    }
+    &__description{
+      font-size: 1rem;
+      line-height: 1rem;
+    }
+  }
+  @include adaptive(mobile){
+    &__content{
+      flex-direction: column;
+      padding: 25px 25px;
+      height: auto;
+      gap: 15px;
+    }
+    &__title{
+      font-size: 2rem;
+      line-height: 2rem;
+      width: 100%;
+      text-align: start;
+    }
+    &__line{
+      display: none;
+    }
+    &__description{
+      font-size: 1rem;
+      line-height: 1rem;
+      width: 100%;
+    }
+  }
+}
