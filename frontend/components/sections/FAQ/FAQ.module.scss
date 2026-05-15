@@ -1,0 +1,21 @@
+.FAQ{
+
+  &__content{
+    width: 100%;
+  }
+  &__title{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+  &__name{
+    font-size: 3.5rem;
+    line-height: 3.5rem;
+  }
+  &__questions{
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+  }
+}
