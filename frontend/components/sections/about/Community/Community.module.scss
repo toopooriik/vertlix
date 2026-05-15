@@ -33,43 +33,17 @@
     text-align: center;
   }
   @include adaptive(table){
-
-    &__content{
-
-    }
-    &__title{
-
-    }
     &__cards{
       display: grid;
       grid-template-columns: repeat(2, auto);
       grid-template-rows: repeat(3, auto);
     }
-    &__card{
-
-    }
-    &__card_title{
-
-    }
   }
   @include adaptive(mobile){
-
-    &__content{
-
-    }
-    &__title{
-
-    }
     &__cards{
       display: grid;
       grid-template-columns: repeat(1, auto);
       grid-template-rows: repeat(7, auto);
-    }
-    &__card{
-
-    }
-    &__card_title{
-
     }
   }
 }

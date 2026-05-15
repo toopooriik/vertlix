@@ -13,9 +13,6 @@
     width: 100%;
     gap: 16px;
   }
-  &__title{
-
-  }
   &__name{
     font-size: 2.5rem;
     line-height: 2.5rem;
@@ -72,97 +69,49 @@
   &__question_bottom{
     display: flex;
     align-items: center;
+    transition: height 0.3s ease-in-out;
+  }
+  .FAQ__question_bottom_disable{
+    height: 0;
+    opacity: 0;
+  }
+  .FAQ__question_bottom_active{
     height: 40px;
+    opacity: 1;
   }
   &__answer{
 
   }
   @include adaptive(table){
-
-    &__content{
-
-    }
-    &__title{
-
-    }
-    &__name{
-
-    }
-    &__description{
-
-    }
-    &__questions{
-
-    }
-    &__question_block{
-
-    }
     &__questions_top{
       min-height: 40px;
       height: 100%;
     }
-    &__question{
-
-    }
-    &__close_open{
-
-    }
-    &__vertical{
-
-    }
-    &__horizontal{
-
-    }
     &__question_bottom{
-      min-height: 40px;
       height: 100%;
     }
-    &__answer{
-
+    .FAQ__question_bottom_disable{
+      min-height: 0;
+      opacity: 0;
+    }
+    .FAQ__question_bottom_active{
+      min-height: 40px;
     }
   }
   @include adaptive(mobile){
-
-    &__content{
-
-    }
-    &__title{
-
-    }
-    &__name{
-
-    }
-    &__description{
-
-    }
-    &__questions{
-
-    }
-    &__question_block{
-
-    }
     &__questions_top{
       min-height: 20px;
       height: 100%;
     }
-    &__question{
-
-    }
-    &__close_open{
-
-    }
-    &__vertical{
-
-    }
-    &__horizontal{
-
-    }
     &__question_bottom{
-      min-height: 20px;
       height: 100%;
     }
-    &__answer{
-
+    .FAQ__question_bottom_disable{
+      min-height: 0;
+      opacity: 0;
+    }
+    .FAQ__question_bottom_active{
+      min-height: 20px;
     }
   }
 }
