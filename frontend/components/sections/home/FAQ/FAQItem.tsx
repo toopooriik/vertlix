@@ -20,9 +20,11 @@ export default function FAQItem({ item }: { item: FAQTypes }){
             </div>
 
 
+            {isOpen &&
                 <div className={`${style.FAQ__question_bottom} ${isOpen ? style.FAQ__question_bottom_active : style.FAQ__question_bottom_disable}`}>
                     <p className={style.FAQ__answer}>{item.answer}</p>
                 </div>
+            }
 
         </div>
     )

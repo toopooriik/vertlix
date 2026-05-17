@@ -3,73 +3,39 @@
 
 .burger {
   @include mega-layer;
-  position: relative;
-  display: none;
-  width: 40px;
-  height: 30px;
-  padding: 0;
-  background: transparent;
-  border: none;
+  position: fixed;
+  display: block;
+  padding: 15px 40px;
+  background: $alt-color;
   cursor: pointer;
-
-  span {
-    position: absolute;
-    left: 0;
-    display: block;
-    width: 100%;
-    height: 4px;
-    background: white;
-    border-radius: 9px;
-    opacity: 1;
-    transition: 0.25s ease-in-out;
-  }
-
-  span:nth-child(1) {
-    top: 0;
-    transform-origin: left center;
-  }
-
-  span:nth-child(2) {
-    top: 50%;
-    transform: translateY(-50%);
-    transform-origin: left center;
-  }
-
-  span:nth-child(3) {
-    top: 100%;
-    transform: translateY(-100%);
-    transform-origin: left center;
+  left: 2%;
+  bottom: 8%;
+  border-radius: 100px;
+  border: 3px solid $alt-color;
+  font-size: 1.3rem;
+  line-height: 1.3rem;
+  font-weight: 700;
+  color: $main-color;
+  transition: background-color 0.3s ease-in-out;
+  &:hover{
+    background: $white
   }
 }
 
 .burgerActive {
-  span:nth-child(1) {
-    top: 0;
-    left: 5px;
-    transform: rotate(45deg);
-    background-color: #000;
-  }
-
-  span:nth-child(2) {
-    width: 0;
-    opacity: 0;
-  }
-
-  span:nth-child(3) {
-    top: 28px;
-    left: 5px;
-    transform: rotate(-45deg);
-    background-color: #000;
-  }
+  background: $white;
 }
 
 @include adaptive(table){
   .burger {
-    display: block;
+    transition: background-color 0.2s ease-in-out;
   }
 }
 @include adaptive(mobile){
   .burger {
-    display: block;
+    transition: background-color 0.2s ease-in-out;
+  }
+  .burgerActive {
+    display: none;
   }
 }

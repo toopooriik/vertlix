@@ -1,7 +1,8 @@
 'use client';
 
 import {usePathname} from 'next/navigation';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
+import {motion, AnimatePresence} from "framer-motion";
 import Link from 'next/link';
 
 import style from './navigation.module.scss';
@@ -31,36 +32,100 @@ const navLinks: LinkType[] = [
         href: '/FAQ',
     },
 ];
-export default function Navigation(){
+export default function Navigation() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
     const pathname = usePathname();
-    return(
-        <>
-            {isMenuOpen && (
-                <div
-                    className={`${style.interlayer} ${style.interlayerActive}`}
-                    onClick={() => setIsMenuOpen(false)}
-                ></div>
-            )}
-            <div className={style.header__navList}>
-                <Checkbox
-                    isOpen={isMenuOpen}
-                    onToggle={() => setIsMenuOpen(prev => !prev)}
-                />
-                <ul className={`${style.header__navList_ul} ${isMenuOpen ? style.header__navList_ulOpen : ''}`}>
+    useEffect(() => {
+        const media = window.matchMedia("(max-width: 480px)");
+        const update = () => {
+            setIsMobile(media.matches);
+        };
+        update();
+        const handleScroll = () => {
+            if (media.matches) return;
+            setIsMenuOpen(false);
+        };
 
-                    {navLinks.map((link: LinkType) => {
-                        return (
-                            <li key={link.href}>
-                                <Link href={link.href}
-                                      className={link.href === pathname ? style.header__active : ''}>
-                                    {link.label}
-                                </Link>
-                            </li>
-                        )
-                    })}
-                </ul>
-            </div>
+        media.addEventListener("change", update);
+        window.addEventListener('scroll', handleScroll);
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            media.removeEventListener("change", update)
+        };
+    }, []);
+    useEffect(() => {
+        if (!isMenuOpen) return;
+        if (!isMobile) return;
+
+        const scrollY = window.scrollY;
+
+        document.body.style.position = "fixed";
+        document.body.style.top = `-${scrollY}px`;
+        document.body.style.width = "100%";
+        document.documentElement.style.overflow = "hidden";
+
+        return () => {
+            document.body.style.position = "";
+            document.body.style.top = "";
+            document.body.style.width = "";
+            document.documentElement.style.overflow = "";
+
+            window.scrollTo(0, scrollY);
+        };
+    }, [isMenuOpen, isMobile]);
+        const menuVariants = {
+        closed: {
+            left: "-150%"
+        },
+        open: (isMobile: boolean) => ({
+            left: isMobile ? "0" : "2%"
+        })
+    };
+    return (
+        <>
+            <AnimatePresence>
+                {isMenuOpen && (
+                    <>
+                        <motion.div
+                            initial={{opacity: 0}}
+                            animate={{opacity: 0.6}}
+                            exit={{opacity: 0}}
+                            className={`${style.interlayer} ${style.interlayerActive}`}
+                            onClick={() => setIsMenuOpen(false)}
+                        ></motion.div>
+
+                        <motion.div
+                            className={style.header__navList}
+                            initial="closed"
+                            animate="open"
+                            exit="closed"
+                        >
+                            <motion.ul
+                                className={style.header__navList_ul}
+                                custom={isMobile}
+                                variants={menuVariants}
+                                transition={{duration: 0.2, ease: "easeInOut"}}
+                            >
+                                {navLinks.map((link: LinkType) => {
+                                    return (
+                                        <li key={link.href} className={style.header__navList_li}>
+                                            <Link href={link.href}
+                                                  className={link.href === pathname ? style.header__active : ''}>
+                                                {link.label}
+                                            </Link>
+                                        </li>
+                                    )
+                                })}
+                            </motion.ul>
+                        </motion.div>
+                    </>)}
+            </AnimatePresence>
+            <Checkbox
+                isOpen={isMenuOpen}
+                onToggle={() => setIsMenuOpen(prev => !prev)}
+            />
         </>
 
     )
