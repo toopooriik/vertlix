@@ -75,7 +75,7 @@ export default function Navigation() {
             window.scrollTo(0, scrollY);
         };
     }, [isMenuOpen, isMobile]);
-        const menuVariants = {
+    const menuVariants = {
         closed: {
             left: "-150%"
         },
@@ -110,12 +110,12 @@ export default function Navigation() {
                             >
                                 {navLinks.map((link: LinkType) => {
                                     return (
-                                        <li key={link.href} className={style.header__navList_li}>
-                                            <Link href={link.href}
-                                                  className={link.href === pathname ? style.header__active : ''}>
+                                        <Link href={link.href}
+                                              className={link.href === pathname ? style.header__active : ''} key={link.href}>
+                                            <li className={style.header__navList_li}>
                                                 {link.label}
-                                            </Link>
-                                        </li>
+                                            </li>
+                                        </Link>
                                     )
                                 })}
                             </motion.ul>

@@ -7,9 +7,6 @@ import style from './Footer.module.scss'
 export default function Footer(){
 return(
   <footer className={style.footer}>
-    <div className={style.footer__navifation}>
-      <Navigation />
-    </div>
     <div className={style.footer__bottom}>
       <div className={style.footer__logo}>
         <Image

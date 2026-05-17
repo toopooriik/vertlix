@@ -1,41 +1,101 @@
 @use '@/styles/mixins.scss' as *;
 @use '@/styles/variables.scss' as *;
 
-.burger {
+.position {
   @include mega-layer;
   position: fixed;
-  display: block;
-  padding: 15px 40px;
-  background: $alt-color;
-  cursor: pointer;
   left: 2%;
   bottom: 8%;
-  border-radius: 100px;
-  border: 3px solid $alt-color;
-  font-size: 1.3rem;
-  line-height: 1.3rem;
-  font-weight: 700;
-  color: $main-color;
-  transition: background-color 0.3s ease-in-out;
-  &:hover{
-    background: $white
+}
+
+.burger {
+  position: relative;
+  display: block;
+  width: 50px;   /* Возвращаем твои 50px для кружка */
+  height: 50px;
+  padding: 0;
+  background: $alt-color; /* Твой изначальный фон */
+  cursor: pointer;
+  border-radius: 50%;
+  border: 3px solid $alt-color; /* Твоя изначальная рамка */
+  transition: all 0.3s ease-in-out;
+  z-index: 100;
+
+  span {
+    position: absolute;
+    display: block;
+    width: 24px;  /* Ширина полоски (чтобы аккуратно влезала в круг) */
+    height: 3px;  /* Толщина полоски */
+    background: white; /* Цвет полосок по умолчанию */
+    border-radius: 4px;
+    left: 50%;
+    transition: all 0.3s ease-in-out;
+  }
+
+  /* Базовое положение (три ровные полоски) */
+  span:nth-child(1) {
+    top: 30%;
+    transform: translate(-50%, -50%);
+  }
+
+  span:nth-child(2) {
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  span:nth-child(3) {
+    top: 70%;
+    transform: translate(-50%, -50%);
+  }
+
+  /* Эффект при наведении (из твоего первого кода) */
+  &:hover {
+    background: $white;
+    span {
+      background: #000;
+    }
+  }
+
+  /* Активное положение (когда меню открыто — кружок белый, внутри черный крестик) */
+  &.burgerActive {
+    background: $white;
+
+    span {
+      background: #000;
+    }
+
+    /* Верхняя палка едет в центр и поворачивается */
+    span:nth-child(1) {
+      top: 50%;
+      transform: translate(-50%, -50%) rotate(45deg);
+    }
+
+    /* Центральная палка исчезает */
+    span:nth-child(2) {
+      width: 0;
+      opacity: 0;
+    }
+
+    /* Нижняя палка едет в центр и поворачивается в обратную сторону */
+    span:nth-child(3) {
+      top: 50%;
+      transform: translate(-50%, -50%) rotate(-45deg);
+    }
   }
 }
 
-.burgerActive {
-  background: $white;
-}
-
-@include adaptive(table){
+// Если нужны адаптивные правки, оставляем их тут
+@include adaptive(table) {
   .burger {
-    transition: background-color 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
   }
 }
-@include adaptive(mobile){
+
+@include adaptive(mobile) {
   .burger {
-    transition: background-color 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
   }
   .burgerActive {
-    display: none;
+    display: block;
   }
 }
