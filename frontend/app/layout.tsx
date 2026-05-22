@@ -6,6 +6,8 @@ import { lato } from '@/lib/fonts';
 
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import Navigation from "@/components/ui/navigation";
+
 export const metadata: Metadata = {
     title: 'Veltrix',
     description: 'Сервис подбора строительных материалов',
@@ -20,6 +22,7 @@ export default function RootLayout({
         <html lang="ru">
             <body className={lato.variable}>
             <Header />
+            <Navigation/>
                 {children}
             <Footer />
             </body>

@@ -3,16 +3,67 @@
 
 
 .header {
-  @include padding-d;
-  @include row-flex-between;
-  background-color: $main-color;
-  width: 100%;
+  &__content {
+    display: flex;
+    align-items: center;
+    background-color: $main-color;
+    max-width: 1320px;
+    width: 100%;
+    padding: 0 25px;
+    border-radius: 25px;
+  }
 
   &__logo {
     width: 170px;
     flex: 0 0 170px;
     height: auto;
   }
+
+  &__functions {
+    display: flex;
+    justify-content: end;
+    gap: 25px;
+    width: 100%;
+  }
+
+  &__search {
+    max-width: 600px;
+    width: 100%;
+
+    input {
+      width: 100%;
+      height: 40px;
+      border-radius: 100px;
+      outline: none;
+      padding-left: 20px;
+      font-size: 1.2rem;
+      line-height: 1.2rem;
+      border: 3px solid $main-color;
+      transition: border-bottom 0.2s ease;
+      &:focus {
+        border-bottom: 5px solid $alt-color;
+      }
+    }
+  }
+
+  &__button_filter {
+    background-color: $alt-color;
+    padding: 0 30px;
+    border-radius: 100px;
+    color: $white;
+    font-weight: 700;
+    font-size: 1.1rem;
+    line-height: 1.1rem;
+    border: 3px solid $alt-color;
+    transition: color 0.2s ease,
+    background-color 0.2s ease;
+
+    &:hover {
+      background-color: $white;
+      color: $main-color;
+    }
+  }
+
   @include adaptive(mobile) {
     @include padding-m;
   }
