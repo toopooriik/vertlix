@@ -13,6 +13,10 @@ p{
   border-bottom: 3px solid $alt-color;
   padding-bottom: 10px;
 }
+::selection {
+  background-color: rgba($main-color, 0.1);
+  color: $alt-color;
+}
 html, body{
   overflow-x: hidden;
 }
