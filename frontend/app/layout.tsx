@@ -21,8 +21,8 @@ export default function RootLayout({
     return (
         <html lang="ru">
             <body className={lato.variable}>
-            <Header />
             <Navigation/>
+            <Header />
                 {children}
             <Footer />
             </body>

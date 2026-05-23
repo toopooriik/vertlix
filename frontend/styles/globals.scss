@@ -9,6 +9,10 @@ p{
   font-weight: 700;
   color: $main-color;
 }
+:is(h1, h2){
+  border-bottom: 3px solid $alt-color;
+  padding-bottom: 10px;
+}
 html, body{
   overflow-x: hidden;
 }

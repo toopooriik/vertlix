@@ -3,20 +3,42 @@
 
 
 .header {
+  @include second-layer;
+  position: relative;
+  &__filter{
+    width: 100%;
+    position: absolute;
+    top: 100%;
+  }
   &__content {
+    position: relative;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    gap: 10px;
     background-color: $main-color;
     max-width: 1320px;
     width: 100%;
-    padding: 0 25px;
+    padding: 10px 25px;
     border-radius: 25px;
   }
 
+  &__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
   &__logo {
-    width: 170px;
     flex: 0 0 170px;
+    display: flex;
+    align-items: center;
     height: auto;
+  }
+
+  &__logo_mobile {
+    display: none;
   }
 
   &__functions {
@@ -32,7 +54,6 @@
 
     input {
       width: 100%;
-      height: 40px;
       border-radius: 100px;
       outline: none;
       padding-left: 20px;
@@ -40,6 +61,7 @@
       line-height: 1.2rem;
       border: 3px solid $main-color;
       transition: border-bottom 0.2s ease;
+      height: 50px;
       &:focus {
         border-bottom: 5px solid $alt-color;
       }
@@ -48,11 +70,11 @@
 
   &__button_filter {
     background-color: $alt-color;
-    padding: 0 30px;
+    padding: 10px 50px;
     border-radius: 100px;
     color: $white;
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 1.3rem;
     line-height: 1.1rem;
     border: 3px solid $alt-color;
     transition: color 0.2s ease,
@@ -65,9 +87,62 @@
   }
 
   @include adaptive(mobile) {
-    @include padding-m;
+    &__content {
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    &__top {
+      width: 100%;
+      height: 50px;
+      justify-content: start;
+    }
+    &__search {
+      max-width: none;
+      input {
+        height: 50px;
+      }
+    }
+    &__logo {
+      flex: 0 0 70px;
+    }
+    &__logo_mobile {
+      display: block;
+      height: 100%;
+    }
+    &__logo_desktop {
+      display: none;
+    }
+    &__button_filter {
+      width: 100%;
+    }
   }
   @include adaptive(table) {
-    @include padding-t;
+    &__content {
+      flex-direction: column;
+      gap: 20px;
+    }
+    &__top {
+      height: 60px;
+      justify-content: start;
+    }
+    &__search {
+      max-width: none;
+      input {
+        height: 60px;
+      }
+    }
+    &__logo {
+      flex: 0 0 70px;
+    }
+    &__logo_mobile {
+      display: block;
+      height: 100%;
+    }
+    &__logo_desktop {
+      display: none;
+    }
+    &__button_filter {
+      width: 100%;
+    }
   }
 }

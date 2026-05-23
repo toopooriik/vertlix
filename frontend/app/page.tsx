@@ -1,14 +1,10 @@
-import Hero from "@/components/sections/home/Hero";
-import About from "@/components/sections/home/About";
+import TopProducts from '@/components/sections/home/TopProducts';
 import PopularCategories from "@/components/sections/home/PopularCategories";
-import FAQ from "@/components/sections/home/FAQ";
 export default function HomePage() {
     return (
         <main>
-            <Hero/>
-            <About/>
+            <TopProducts/>
             <PopularCategories/>
-            <FAQ/>
         </main>
     );
 }

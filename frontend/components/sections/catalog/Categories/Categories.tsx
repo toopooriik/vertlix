@@ -1,10 +1,10 @@
 import style from './Categories.module.scss';
 import Container from "@/components/layout/Container";
-import CategoryType from "@/types/categoryType";
 import Image from "next/image";
 import Link from "next/link";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faArrowRight} from "@fortawesome/free-solid-svg-icons";
+import CategoryType from "@/types/categoryType";
 
 const categories: CategoryType[] = [
     {
