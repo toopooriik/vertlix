@@ -111,7 +111,7 @@
 
 
   @include adaptive(mobile) {
-    &__content {
+    &__content_main {
       flex-wrap: wrap;
       gap: 15px;
     }
@@ -142,7 +142,7 @@
     }
   }
   @include adaptive(table) {
-    &__content {
+    &__content_main {
       flex-direction: column;
       gap: 20px;
     }
