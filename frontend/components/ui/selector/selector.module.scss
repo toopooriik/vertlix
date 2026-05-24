@@ -30,6 +30,7 @@
     transition: transform 0.2s ease-in-out;
   }
   &__dropdown {
+    @include super-layer;
     position: absolute;
     top: 0;
     max-height: 0;
@@ -56,6 +57,7 @@
   }
 
   &__dropdown_point {
+    @include super-layer;
     border-bottom: 1px solid rgba($main-color, 0.2);
     padding: 5px 10px;
     border-radius: 2px;

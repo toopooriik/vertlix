@@ -5,12 +5,34 @@
 .header {
   @include second-layer;
   position: relative;
-  &__filter{
-    width: 100%;
+
+  &__filter {
+    @include firts-layer;
+    width: 95%;
     position: absolute;
-    top: 100%;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 200ms ease,
+    top 175ms ease;
+
   }
+
+  &__filter_open {
+    top: 100%;
+    opacity: 1;
+  }
+
   &__content {
+    @include second-layer;
+    position: relative;
+    width: 100%;
+
+  }
+
+  &__content_main {
+    @include second-layer;
     position: relative;
     display: flex;
     align-items: center;
@@ -62,6 +84,7 @@
       border: 3px solid $main-color;
       transition: border-bottom 0.2s ease;
       height: 50px;
+
       &:focus {
         border-bottom: 5px solid $alt-color;
       }
@@ -71,7 +94,7 @@
   &__button_filter {
     background-color: $alt-color;
     padding: 10px 50px;
-    border-radius: 100px;
+    border-radius: 12px;
     color: $white;
     font-weight: 700;
     font-size: 1.3rem;
@@ -86,6 +109,7 @@
     }
   }
 
+
   @include adaptive(mobile) {
     &__content {
       flex-wrap: wrap;
@@ -98,6 +122,7 @@
     }
     &__search {
       max-width: none;
+
       input {
         height: 50px;
       }
@@ -127,6 +152,7 @@
     }
     &__search {
       max-width: none;
+
       input {
         height: 60px;
       }

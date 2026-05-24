@@ -38,7 +38,7 @@ export default function Selector({items, value, onChangeAction}: Arguments) {
                  onClick={() => setIsOpen(!isOpen)}
             >
                 {typeof value === 'string' ? value : value.name}
-                <FontAwesomeIcon icon={faAngleDown} className={style.selector__main_block_arrow}/>
+                <FontAwesomeIcon icon={faAngleDown} className={style.selector__main_block_arrow} width={20} height={16}/>
             </div>
             <div className={`${style.selector__dropdown} ${isOpen ? style.selector__dropdown_open : ''}`} ref={dropdown}>
                 {items.map((item) => {
