@@ -5,6 +5,7 @@
   @include padding-d;
   @include flex-centre;
   margin: 50px 0;
+  width: 100%;
   @include adaptive(mobile){
     @include padding-m;
     margin: 15px 0;

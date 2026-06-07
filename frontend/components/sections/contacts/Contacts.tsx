@@ -1,6 +1,7 @@
 
 import Container from "@/components/layout/Container";
 import style from './Contacts.module.scss';
+import Social from '@/components/ui/social'
 export default function Contacts(){
     return(
         <div className={style.contacts}>
@@ -13,6 +14,7 @@ export default function Contacts(){
                             <p className={style.contacts__author_email}>is511723@gmail.com</p>
                             <p className={style.contacts__author_phone}>+7(914)428-47-34</p>
                         </div>
+                        <Social/>
                     </div>
                     <div className={style.contacts__right}>
                         <form action="" className={style.contacts__form}>
@@ -25,8 +27,8 @@ export default function Contacts(){
                                 <input type="text" id={'email'} placeholder={'example@gmail.com'}/>
                             </div>
                             <div className={`${style.contacts__comment} ${style.contacts__form_input}`}>
-                                <label htmlFor={'comment'}><span>Комментарий</span></label>
-                                <input type="text" id={'comment'} placeholder={'Комментарий'}/>
+                                <label htmlFor={'comment'}><span>Вопрос?</span></label>
+                                <input type="text" id={'comment'} placeholder={'Вопрос'}/>
                             </div>
                             <button type={'submit'} className={style.contacts__submit}>Отправить</button>
                         </form>

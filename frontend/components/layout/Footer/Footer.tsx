@@ -1,10 +1,16 @@
+'use client';
 import Image from 'next/image';
 
-import Social from "@/components/ui/social";
-import Navigation from "@/components/ui/navigation";
+import Social from "@/components/ui/social";;
 import style from './Footer.module.scss'
-
+import { usePathname } from 'next/navigation';
 export default function Footer(){
+  const pathname = usePathname();
+  const hiddenFooterPage = '/contacts';
+  const shouldHideFooter = pathname === hiddenFooterPage;
+  if(shouldHideFooter){
+    return null;
+  }
 return(
   <footer className={style.footer}>
     <div className={style.footer__bottom}>

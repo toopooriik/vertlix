@@ -9,7 +9,7 @@ export default function PopularCategories() {
             <Container>
                 <div className={style.catalog__content}>
                     <div className={style.catalog__title}>
-                        <h2 className={style.catalog__name}>Популярные категории <br/>материалов</h2>
+                        <h2 className={style.catalog__name}>Популярные категории <br/>товаров</h2>
                         <p className={style.catalog__description}>
                             Небольшой слайдер с примерами направлений для быстрого перехода к подбору.
                         </p>

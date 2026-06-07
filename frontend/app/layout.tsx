@@ -22,9 +22,9 @@ export default function RootLayout({
         <html lang="ru">
             <body className={lato.variable}>
             <Navigation/>
-            <Header />
+            <Header/>
                 {children}
-            <Footer />
+            <Footer/>
             </body>
         </html>
     );

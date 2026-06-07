@@ -34,9 +34,9 @@ export default function Works() {
                                         <h4 className={style.works__number}>
                                             {index+1}
                                         </h4>
-                                        <p className={style.works__text}>
+                                        <h3 className={style.works__text}>
                                             {item.text}
-                                        </p>
+                                        </h3>
                                     </div>
                                 </div>
                             )

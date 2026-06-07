@@ -111,7 +111,8 @@ export default function Navigation() {
                                 {navLinks.map((link: LinkType) => {
                                     return (
                                         <Link href={link.href}
-                                              className={link.href === pathname ? style.header__active : ''} key={link.href}>
+                                              className={link.href === pathname ? style.header__active : ''}
+                                              key={link.href}>
                                             <li className={style.header__navList_li}>
                                                 {link.label}
                                             </li>

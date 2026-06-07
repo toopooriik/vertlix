@@ -2,19 +2,24 @@
 @use '@/styles/variables' as *;
 
 .contacts {
+  @include flex-centre;
+  height: 100vh;
   &__content {
+
     width: 100%;
     height: 100%;
     display: flex;
     gap: 25px;
     flex-wrap: wrap;
+    max-width: 1320px;
   }
 
   &__left, &__right {
     @include flex-centre;
+    flex-shrink: 0;
     flex-direction: column;
     background-color: $main-color;
-    padding: 60px;
+    padding: 60px 30px;
     border-radius: 25px;
     -webkit-box-shadow: 0px 12px 11px 2px rgba($main-color, 0.39);
     -moz-box-shadow: 0px 12px 11px 2px rgba($main-color, 0.39);

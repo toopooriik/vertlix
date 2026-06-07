@@ -5,9 +5,16 @@ import Image from 'next/image';
 import style from './Header.module.scss';
 import Container from "@/components/layout/Container";
 import Filter from "@/components/ui/filter";
-
+import { usePathname } from 'next/navigation';
 export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
+
+    const pathname = usePathname();
+    const hiddenHeaderPage = ['/contacts', '/about', '/FAQ'];
+    const shouldHideHeader = hiddenHeaderPage.includes(pathname);
+    if(shouldHideHeader){
+        return null;
+    }
     return (
         <header className={style.header}>
             <Container>
