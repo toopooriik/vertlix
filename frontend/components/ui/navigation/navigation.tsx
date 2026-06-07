@@ -1,14 +1,14 @@
 'use client';
 
-import {usePathname} from 'next/navigation';
-import {useState, useEffect} from 'react';
-import {motion, AnimatePresence} from "framer-motion";
+import { usePathname } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
 import style from './navigation.module.scss';
-import Checkbox from "@/components/ui/burgerMenu";
+import Checkbox from '@/components/ui/burgerMenu';
 
-import {LinkType} from '@/types/link';
+import { LinkType } from '@/types/link';
 
 const navLinks: LinkType[] = [
     {
@@ -32,69 +32,84 @@ const navLinks: LinkType[] = [
         href: '/FAQ',
     },
 ];
+
 export default function Navigation() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
     const pathname = usePathname();
+
     useEffect(() => {
-        const media = window.matchMedia("(max-width: 480px)");
+        const media = window.matchMedia('(max-width: 480px)');
+
         const update = () => {
             setIsMobile(media.matches);
         };
-        update();
+
         const handleScroll = () => {
             if (media.matches) return;
+
             setIsMenuOpen(false);
         };
 
-        media.addEventListener("change", update);
+        update();
+
+        media.addEventListener('change', update);
         window.addEventListener('scroll', handleScroll);
 
         return () => {
+            media.removeEventListener('change', update);
             window.removeEventListener('scroll', handleScroll);
-            media.removeEventListener("change", update)
         };
     }, []);
+
+    useEffect(() => {
+        if (!isMobile) return;
+
+        setIsMenuOpen(false);
+    }, [pathname, isMobile]);
+
     useEffect(() => {
         if (!isMenuOpen) return;
         if (!isMobile) return;
 
         const scrollY = window.scrollY;
 
-        document.body.style.position = "fixed";
+        document.body.style.position = 'fixed';
         document.body.style.top = `-${scrollY}px`;
-        document.body.style.width = "100%";
-        document.documentElement.style.overflow = "hidden";
+        document.body.style.width = '100%';
+        document.documentElement.style.overflow = 'hidden';
 
         return () => {
-            document.body.style.position = "";
-            document.body.style.top = "";
-            document.body.style.width = "";
-            document.documentElement.style.overflow = "";
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.width = '';
+            document.documentElement.style.overflow = '';
 
             window.scrollTo(0, scrollY);
         };
     }, [isMenuOpen, isMobile]);
+
     const menuVariants = {
         closed: {
-            left: "-150%"
+            left: '-150%',
         },
-        open: (isMobile: boolean) => ({
-            left: isMobile ? "0" : "2%"
-        })
+        open: (isMobileValue: boolean) => ({
+            left: isMobileValue ? '0' : '2%',
+        }),
     };
+
     return (
         <>
             <AnimatePresence>
                 {isMenuOpen && (
                     <>
                         <motion.div
-                            initial={{opacity: 0}}
-                            animate={{opacity: 0.6}}
-                            exit={{opacity: 0}}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 0.6 }}
+                            exit={{ opacity: 0 }}
                             className={`${style.interlayer} ${style.interlayerActive}`}
                             onClick={() => setIsMenuOpen(false)}
-                        ></motion.div>
+                        />
 
                         <motion.div
                             className={style.header__navList}
@@ -106,28 +121,34 @@ export default function Navigation() {
                                 className={style.header__navList_ul}
                                 custom={isMobile}
                                 variants={menuVariants}
-                                transition={{duration: 0.2, ease: "easeInOut"}}
+                                transition={{ duration: 0.2, ease: 'easeInOut' }}
                             >
-                                {navLinks.map((link: LinkType) => {
-                                    return (
-                                        <Link href={link.href}
-                                              className={link.href === pathname ? style.header__active : ''}
-                                              key={link.href}>
-                                            <li className={style.header__navList_li}>
-                                                {link.label}
-                                            </li>
-                                        </Link>
-                                    )
-                                })}
+                                {navLinks.map((link: LinkType) => (
+                                    <Link
+                                        href={link.href}
+                                        className={link.href === pathname ? style.header__active : ''}
+                                        key={link.href}
+                                        onClick={() => {
+                                            if (isMobile) {
+                                                setIsMenuOpen(false);
+                                            }
+                                        }}
+                                    >
+                                        <li className={style.header__navList_li}>
+                                            {link.label}
+                                        </li>
+                                    </Link>
+                                ))}
                             </motion.ul>
                         </motion.div>
-                    </>)}
+                    </>
+                )}
             </AnimatePresence>
+
             <Checkbox
                 isOpen={isMenuOpen}
-                onToggle={() => setIsMenuOpen(prev => !prev)}
+                onToggle={() => setIsMenuOpen((prev) => !prev)}
             />
         </>
-
-    )
+    );
 }

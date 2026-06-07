@@ -17,28 +17,30 @@ export default function Filter(){
     const [maxPrice, setMaxPrice] = useState<string>('');
     return(
         <div className={style.filter}>
-            <Selector items={categories} value={category} onChangeAction={setCategory}/>
-            <Selector items={sites} value={site} onChangeAction={setSite}/>
-            <Selector items={sources} value={source} onChangeAction={setSource}/>
-            <div className={style.filter__min_max_price}>
-                <p>Диапазон цены</p>
-                <div className={style.filter__min_max_price_inputs}>
-                    <Input
-                        value={minPrice}
-                        setValue={setMinPrice}
-                        placeholder="От"
-                        maxWidth={'250px'}
-                        height={'30px'}
-                        typeValue={'number'}
-                    />
-                    <Input
-                        value={maxPrice}
-                        setValue={setMaxPrice}
-                        placeholder="До"
-                        maxWidth={'250px'}
-                        height={'30px'}
-                        typeValue={'number'}
-                    />
+            <div className={style.filter__control}>
+                <Selector items={categories} value={category} onChangeAction={setCategory}/>
+                <Selector items={sites} value={site} onChangeAction={setSite}/>
+                <Selector items={sources} value={source} onChangeAction={setSource}/>
+                <div className={style.filter__min_max_price}>
+                    <p>Диапазон цены</p>
+                    <div className={style.filter__min_max_price_inputs}>
+                        <Input
+                            value={minPrice}
+                            setValue={setMinPrice}
+                            placeholder="От"
+                            maxWidth={'250px'}
+                            height={'30px'}
+                            typeValue={'number'}
+                        />
+                        <Input
+                            value={maxPrice}
+                            setValue={setMaxPrice}
+                            placeholder="До"
+                            maxWidth={'250px'}
+                            height={'30px'}
+                            typeValue={'number'}
+                        />
+                    </div>
                 </div>
             </div>
             <button className={style.filter__button}>

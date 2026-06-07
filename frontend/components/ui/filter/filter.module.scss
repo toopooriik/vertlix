@@ -3,7 +3,7 @@
 
 .filter {
   display: flex;
-  align-items: end;
+  align-items: flex-end;
   max-width: 1320px;
   width: 100%;
   gap: 50px;
@@ -14,17 +14,36 @@
   border-style: solid;
   border-color: $main-color;
 
+  &__control {
+    display: flex;
+    align-items: flex-end;
+    gap: 50px;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
   &__min_max_price {
     display: flex;
     flex-direction: column;
     gap: 10px;
     width: 100%;
+    min-width: 250px;
   }
-  &__min_max_price_inputs{
+
+  &__min_max_price_inputs {
     display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
     gap: 10px;
+
+    > * {
+      flex: 1 1 0;
+      min-width: 0;
+    }
   }
+
   &__button {
+    flex: 0 0 auto;
     background-color: $alt-color;
     color: $white;
     outline: 3px solid $alt-color;
@@ -33,8 +52,10 @@
     font-weight: 600;
     font-size: 1.2rem;
     line-height: 1.2rem;
-    transition: background-color 0.1s ease,
-    color 0.3s ease;
+    white-space: nowrap;
+    transition:
+            background-color 0.1s ease,
+            color 0.3s ease;
 
     &:hover {
       background-color: $white;
@@ -42,22 +63,42 @@
     }
   }
 
-  @include adaptive(table) {
+  @media (max-width: 1180px) {
+    flex-wrap: wrap;
+    gap: 20px;
 
-    &__min_max_price {
-
+    &__control {
+      width: 100%;
+      gap: 20px;
     }
-    &__button {
 
+    &__button {
+      order: 2;
+      width: 100%;
+      flex: 1 0 100%;
+      padding: 12px 20px;
     }
   }
-  @include adaptive(mobile) {
+
+  @media (max-width: 760px) {
+    &__control {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 16px;
+
+      > * {
+        width: 100%;
+        max-width: none;
+      }
+    }
 
     &__min_max_price {
-
+      min-width: 0;
     }
-    &__button {
 
+    &__min_max_price_inputs {
+      flex-direction: row;
+      flex-wrap: nowrap;
     }
   }
 }

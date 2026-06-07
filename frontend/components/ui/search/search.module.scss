@@ -1,0 +1,113 @@
+@use '@/styles/mixins' as *;
+@use '@/styles/variables' as *;
+
+.search {
+  position: relative;
+  max-width: 420px;
+  width: 100%;
+  z-index: 900;
+  &__input {
+    @include outline;
+    width: 100%;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 12px;
+    color: $text-color;
+    font-size: 1rem;
+    line-height: 1rem;
+    transition:
+            outline-color 0.15s ease,
+            outline-width 0.15s ease;
+
+    &:focus {
+      outline: 3px solid $alt-color;
+    }
+  }
+
+  &__dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    z-index: 999;
+    width: 100%;
+    max-height: 255px;
+    padding: 8px;
+    border-radius: 16px;
+    background-color: $white;
+    box-shadow: 0 12px 30px rgba($main-color, 0.2);
+    overflow: hidden;
+  }
+
+  &__list {
+    max-height: 235px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+
+  &__item {
+    display: flex;
+    gap: 10px;
+    padding: 8px;
+    border-radius: 12px;
+    text-decoration: none;
+    color: inherit;
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background-color: rgba($main-color, 0.08);
+    }
+  }
+
+  &__image {
+    width: 52px;
+    height: 52px;
+    flex: 0 0 52px;
+    border-radius: 10px;
+    object-fit: cover;
+  }
+
+  &__info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  &__name {
+    color: $main-color;
+    font-size: 1rem;
+    line-height: 1.1rem;
+  }
+
+  &__meta,
+  &__price {
+    color: $text-color;
+    font-size: 0.9rem;
+    line-height: 1rem;
+  }
+
+  &__price {
+    color: $alt-color;
+    font-weight: 700;
+  }
+
+  &__empty {
+    padding: 12px;
+    color: $text-color;
+  }
+
+  @include adaptive(mobile) {
+    max-width: none;
+
+    &__dropdown {
+      max-height: 235px;
+    }
+
+    &__list {
+      max-height: 215px;
+    }
+  }
+}

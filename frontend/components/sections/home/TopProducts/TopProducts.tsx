@@ -1,8 +1,16 @@
 'use client';
-import Image from "next/image";
+
+import { useState } from 'react';
+import Image from 'next/image';
+import { Autoplay, FreeMode } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+
+import Container from '@/components/layout/Container';
 import style from './TopProducts.module.scss';
-import Container from "@/components/layout/Container";
-import {useState, useEffect} from "react";
+
+import 'swiper/css';
+import 'swiper/css/free-mode';
+
 const products = [
     {
         id: 1,
@@ -95,10 +103,11 @@ const products = [
         link: '/products/10',
     },
 ];
+
 export default function TopProducts() {
-    const [itemsPerCard, setItemsPerCard] = useState(4);
     const [expandedProductId, setExpandedProductId] = useState<number | null>(null);
-    const [currentSlide, setCurrentSlide] = useState(0);
+    const sliderProducts = [...products, ...products, ...products];
+
     const getProductTitle = (name: string, isExpanded: boolean) => {
         if (isExpanded || name.length <= 18) {
             return name;
@@ -106,105 +115,119 @@ export default function TopProducts() {
 
         return `${name.slice(0, 18)}...`;
     };
-    useEffect(() => {
-        const checkScreen = () => {
-            if (window.innerWidth <= 1920) {
-                setItemsPerCard(4);
-            }
-            if (window.innerWidth <= 1300) {
-                setItemsPerCard(3);
-            }
-            if (window.innerWidth <= 1024) {
-                setItemsPerCard(2);
-            }
-            if (window.innerWidth <= 580) {
-                setItemsPerCard(1);
-            }
-        };
 
-        checkScreen();
-
-        window.addEventListener('resize', checkScreen);
-
-        return () => {
-            window.removeEventListener('resize', checkScreen);
-        };
-    }, []);
-    const grouped = [];
-
-    for (let i = 0; i < products.length; i += itemsPerCard) {
-        grouped.push(products.slice(i, i + itemsPerCard));
-    }
-    useEffect(() => {
-        if (!grouped.length) return;
-
-        const interval = setInterval(() => {
-            setCurrentSlide((prev) => (prev + 1) % grouped.length);
-        }, 5000); // скорость автопрокрутки
-
-        return () => clearInterval(interval);
-    }, [grouped.length]);
     return (
         <div className={style.top_production}>
             <Container>
                 <div className={style.top_production__content}>
                     <h2 className={style.top_production__title}>Ищут чаще всего</h2>
+
                     <div className={style.top_production__slider}>
-                        <div
-                            className={style.top_production__slider_wrapper}
-                            style={{
-                                transform: `translateX(-${currentSlide * 100}%)`,
-                                transition: 'transform 0.6s ease',
+                        <Swiper
+                            modules={[Autoplay, FreeMode]}
+                            loop
+                            loopAdditionalSlides={products.length * 2}
+                            freeMode={{
+                                enabled: true,
+                                momentum: false,
                             }}
+                            grabCursor
+                            simulateTouch
+                            allowTouchMove
+                            speed={6000}
+                            autoplay={{
+                                delay: 1,
+                                disableOnInteraction: false,
+                                pauseOnMouseEnter: false,
+                            }}
+                            slidesPerView={4}
+                            breakpoints={{
+                                0: {
+                                    slidesPerView: 1,
+                                    spaceBetween: 18,
+                                },
+                                580: {
+                                    slidesPerView: 2,
+                                    spaceBetween: 20,
+                                },
+                                1024: {
+                                    slidesPerView: 3,
+                                    spaceBetween: 25,
+                                },
+                                1300: {
+                                    slidesPerView: 4,
+                                    spaceBetween: 25,
+                                },
+                            }}
+                            spaceBetween={25}
+                            className={style.top_production__swiper}
                         >
-                            {grouped.map((group, index) => (
-                                <div className={style.top_production__card} key={index}>
-                                    {group.map((product) => (
-                                        <div key={product.id} className={style.top_production__product}>
-                                            <Image
-                                                src={'/tipoProduct.svg'}
-                                                alt={product.name}
-                                                width={300}
-                                                height={300}
-                                                className={style.top_production__product_img}
-                                            />
-                                            <div className={style.top_production__product_info}>
-                                                <h4 className={style.top_production__product_name}>
-                                                   <span
-                                                       onClick={() => {
-                                                           if (product.name.length <= 18) return;
-                                                           setExpandedProductId((prev) => (prev === product.id ? null : product.id));
-                                                       }}
-                                                       title={product.name}
-                                                       style={{cursor: product.name.length > 18 ? 'pointer' : 'default'}}
-                                                   >
-                                                       {getProductTitle(product.name, expandedProductId === product.id)}
-                                                   </span>
-                                                </h4>
-                                                <p className={style.top_production__product_category}>
-                                                    Категория: {product.category}
-                                                </p>
-                                                <p className={style.top_production__product_category}>
-                                                    С сайта: {product.site}
-                                                </p>
-                                                <p className={style.top_production__product_source}>
-                                                    Поставщик: {product.source}
-                                                </p>
-                                                <p className={style.top_production__product_price}>
-                                                    Цена: {product.price}
-                                                </p>
-                                                <a href={product.link} className={style.top_production__product_link}>
-                                                    Перейти к товару
-                                                </a>
-                                            </div>
+                            {sliderProducts.map((product, index) => (
+                                <SwiperSlide
+                                    key={`${product.id}-${index}`}
+                                    className={style.top_production__slide}
+                                >
+                                    <div className={style.top_production__product}>
+                                        <Image
+                                            src="/tipoProduct.svg"
+                                            alt={product.name}
+                                            width={300}
+                                            height={300}
+                                            className={style.top_production__product_img}
+                                        />
+
+                                        <div className={style.top_production__product_info}>
+                                            <h4 className={style.top_production__product_name}>
+                                                <span
+                                                    onClick={() => {
+                                                        if (product.name.length <= 18) return;
+
+                                                        setExpandedProductId((prev) =>
+                                                            prev === product.id ? null : product.id
+                                                        );
+                                                    }}
+                                                    title={product.name}
+                                                    style={{
+                                                        cursor: product.name.length > 18 ? 'pointer' : 'default',
+                                                    }}
+                                                >
+                                                    {getProductTitle(
+                                                        product.name,
+                                                        expandedProductId === product.id
+                                                    )}
+                                                </span>
+                                            </h4>
+
+                                            <p className={style.top_production__product_category}>
+                                                Категория: {product.category}
+                                            </p>
+
+                                            <p className={style.top_production__product_category}>
+                                                С сайта: {product.site}
+                                            </p>
+
+                                            <p className={style.top_production__product_source}>
+                                                Поставщик: {product.source}
+                                            </p>
+
+                                            <p className={style.top_production__product_price}>
+                                                Цена: {product.price}
+                                            </p>
+
+                                            <a
+                                                href={product.link}
+                                                className={style.top_production__product_link}
+                                            >
+                                                Перейти к товару
+                                            </a>
                                         </div>
-                                    ))}
-                                </div>
+                                    </div>
+                                </SwiperSlide>
                             ))}
-                        </div>
+                        </Swiper>
                     </div>
                 </div>
             </Container>
         </div>
-    )
+    );
 }

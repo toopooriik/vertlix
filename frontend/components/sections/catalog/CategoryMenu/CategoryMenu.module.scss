@@ -1,0 +1,122 @@
+@use '@/styles/mixins' as *;
+@use '@/styles/variables' as *;
+
+.category_menu {
+  position: sticky;
+  top: 25px;
+  padding: 20px;
+  border-radius: 25px;
+  background-color: $main-color;
+
+  &_open {
+    transform: translateX(0);
+  }
+
+  &__title {
+    margin-bottom: 18px;
+    color: $white;
+    font-size: 1.4rem;
+    line-height: 1.4rem;
+  }
+
+  &__nav {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__link {
+    padding: 12px 14px;
+    border-radius: 12px;
+    color: $white;
+    text-decoration: none;
+    transition:
+            background-color 0.15s ease,
+            color 0.15s ease;
+
+    &:hover {
+      background-color: rgba($alt-color, 0.75);
+    }
+  }
+
+  &__link_active {
+    background-color: $alt-color;
+    color: $white;
+    font-weight: 700;
+  }
+
+  &__toggle {
+    display: none;
+  }
+
+  @include adaptive(table) {
+    position: static;
+
+    &__nav {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @include adaptive(mobile) {
+    @include super-layer;
+    position: fixed;
+    top: 0;
+    right: 0;
+    max-width: 280px;
+    width: 80%;
+    height: 100vh;
+    padding: 80px 16px 20px;
+    border-radius: 25px 0 0 25px;
+    overflow-y: auto;
+    transform: translateX(100%);
+    transition: transform 0.25s ease;
+
+    &_open {
+      transform: translateX(0);
+    }
+
+    &__nav {
+      display: flex;
+      flex-direction: column;
+    }
+
+    &__toggle {
+      @include mega-layer;
+      position: fixed;
+      top: 50%;
+      right: 12px;
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      border-radius: 50%;
+      background-color: $alt-color;
+      box-shadow: 0 8px 20px rgba($main-color, 0.25);
+      transform: translateY(-50%);
+      cursor: pointer;
+      transition:
+              right 0.25s ease,
+              background-color 0.15s ease;
+
+      span {
+        width: 12px;
+        height: 12px;
+        border-top: 3px solid $white;
+        border-right: 3px solid $white;
+        transform: rotate(-135deg);
+        transition: transform 0.25s ease;
+      }
+    }
+
+    &__toggle_open {
+      right: 285px;
+
+      span {
+        transform: rotate(45deg);
+      }
+    }
+  }
+}

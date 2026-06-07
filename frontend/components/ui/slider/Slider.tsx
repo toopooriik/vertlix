@@ -1,13 +1,17 @@
 'use client';
 
-import {useRef, useState, useEffect} from 'react';
-import Link from "next/link";
-import Image from "next/image";
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faArrowLeft, faArrowRight} from '@fortawesome/free-solid-svg-icons';
-import CategoryType from "@/types/categoryType";
+import { useRef, useState } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import type { Swiper as SwiperType } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
+
+import CategoryType from '@/types/categoryType';
 import style from './Slider.module.scss';
 
+import 'swiper/css';
 
 const categories: CategoryType[] = [
     {
@@ -80,83 +84,94 @@ const categories: CategoryType[] = [
         description: 'Саморезы, анкеры, гвозди, крепёжные элементы и сопутствующие строительные товары.',
         href: 'das',
     },
-
-]
+];
 
 export default function Slider() {
-    const container = useRef<HTMLDivElement>(null!);
-    const card = useRef<HTMLDivElement>(null!);
-    const prevBtn = useRef<any>(null!);
-    const nextBtn = useRef<any>(null!)
-    const [transform, setTransform] = useState(0);
+    const swiperRef = useRef<SwiperType | null>(null);
+    const [isBeginning, setIsBeginning] = useState(true);
+    const [isEnd, setIsEnd] = useState(false);
 
-    container.current as HTMLElement
-    function offsetCalculation():number{
-        const styles = window.getComputedStyle(container.current);
-        const gap:number = parseInt(styles.gap) || 0;
-        const widthCard:number = card.current.offsetWidth;
+    const updateButtonsState = (swiper: SwiperType) => {
+        setIsBeginning(swiper.isBeginning);
+        setIsEnd(swiper.isEnd);
+    };
 
-        return gap + widthCard;
-    }
-    function next()
-    {
-        nextBtn.current.disabled = false;
-        const length:number = offsetCalculation();
-        const maxTranslate =
-            container.current.scrollWidth -
-            container.current.parentElement!.offsetWidth;
-        if (-maxTranslate >  transform-length){
-            setTransform(-maxTranslate)
-            nextBtn.current.disabled = true;
-            return;
-        }
-        setTransform(transform-length);
-    }
-    function prev(){
-        prevBtn.current.disabled = false;
-        const length:number = offsetCalculation();
-        if(transform+length > 0){
-            setTransform(0);
-            prevBtn.current.disabled = true;
-            return;
-        }
+    const handleSwiperInit = (swiper: SwiperType) => {
+        swiperRef.current = swiper;
+        updateButtonsState(swiper);
+    };
 
-        setTransform(transform+length);
-    }
-
-    useEffect(() => {
-        if(container.current){
-            container.current.style.transform = `translateX(${transform}px)`;
-        }
-    }, [transform]);
     return (
-        <>
-            <FontAwesomeIcon icon={faArrowLeft} className={style.slider__arrow_left} onClick={prev} ref={prevBtn}/>
-            <FontAwesomeIcon icon={faArrowRight} className={style.slider__arrow_right} onClick={next} ref={nextBtn}/>
-            <div className={style.slider}>
-                <div className={style.slider__conteiner} ref={container}>
-                    {categories.map((item) => {
-                        return (
-                            <div className={style.slider__card} key={item.id} ref={card}>
-                                <Image
-                                    src={item.image}
-                                    alt={item.name}
-                                    width={250}
-                                    height={120}
-                                />
-                                <div className={style.slider__card_title}>
-                                    <h4 className={style.slider__card_name}>{item.name}</h4>
-                                    <p className={style.slider__card_description}>{item.description}</p>
-                                </div>
-                                <Link href={item.href} className={style.slider__card_link}>
-                                    Перейти к категории <FontAwesomeIcon icon={faArrowRight}
-                                                                         className={style.slider__card_link_arrow}/>
-                                </Link>
+        <div className={style.slider}>
+            <button
+                type="button"
+                className={`${style.slider__button} ${isBeginning ? style.slider__button_disabled : ''}`}
+                onClick={() => swiperRef.current?.slidePrev()}
+                disabled={isBeginning}
+                aria-label="Предыдущие категории"
+            >
+                <FontAwesomeIcon icon={faArrowLeft} />
+            </button>
+
+            <Swiper
+                onSwiper={handleSwiperInit}
+                onSlideChange={updateButtonsState}
+                onResize={updateButtonsState}
+                watchOverflow
+                spaceBetween={40}
+                slidesPerView={3}
+                className={style.slider__swiper}
+                breakpoints={{
+                    0: {
+                        slidesPerView: 1,
+                        spaceBetween: 20,
+                    },
+                    580: {
+                        slidesPerView: 2,
+                        spaceBetween: 25,
+                    },
+                    1024: {
+                        slidesPerView: 3,
+                        spaceBetween: 40,
+                    },
+                }}
+            >
+                {categories.map((item) => (
+                    <SwiperSlide key={item.id} className={style.slider__slide}>
+                        <div className={style.slider__card}>
+                            <Image
+                                src={item.image}
+                                alt={item.name}
+                                width={250}
+                                height={120}
+                            />
+
+                            <div className={style.slider__card_title}>
+                                <h4 className={style.slider__card_name}>{item.name}</h4>
+                                <p className={style.slider__card_description}>{item.description}</p>
                             </div>
-                        )
-                    })}
-                </div>
-            </div>
-        </>
-    )
+
+                            <Link href={item.href} className={style.slider__card_link}>
+                                Перейти к категории
+                                <FontAwesomeIcon
+                                    icon={faArrowRight}
+                                    className={style.slider__card_link_arrow}
+                                />
+                            </Link>
+                        </div>
+                    </SwiperSlide>
+                ))}
+            </Swiper>
+
+            <button
+                type="button"
+                className={`${style.slider__button} ${isEnd ? style.slider__button_disabled : ''}`}
+                onClick={() => swiperRef.current?.slideNext()}
+                disabled={isEnd}
+                aria-label="Следующие категории"
+            >
+                <FontAwesomeIcon icon={faArrowRight} />
+            </button>
+        </div>
+    );
 }

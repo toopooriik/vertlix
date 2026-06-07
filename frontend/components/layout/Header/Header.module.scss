@@ -5,6 +5,7 @@
 .header {
   @include second-layer;
   position: relative;
+  overflow: visible;
 
   &__filter {
     @include firts-layer;
@@ -27,6 +28,7 @@
   &__content {
     @include second-layer;
     position: relative;
+    overflow: visible;
     width: 100%;
     max-width: 1320px;
   }
@@ -34,6 +36,7 @@
   &__content_main {
     @include second-layer;
     position: relative;
+    overflow: visible;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -46,6 +49,8 @@
   }
 
   &__top {
+    position: relative;
+    overflow: visible;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -73,22 +78,9 @@
   &__search {
     max-width: 600px;
     width: 100%;
-
-    input {
-      width: 100%;
-      border-radius: 100px;
-      outline: none;
-      padding-left: 20px;
-      font-size: 1.2rem;
-      line-height: 1.2rem;
-      border: 3px solid $main-color;
-      transition: border-bottom 0.2s ease;
-      height: 50px;
-
-      &:focus {
-        border-bottom: 5px solid $alt-color;
-      }
-    }
+    position: relative;
+    overflow: visible;
+    z-index: 900;
   }
 
   &__button_filter {

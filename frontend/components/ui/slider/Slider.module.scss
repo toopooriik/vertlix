@@ -1,41 +1,51 @@
 @use '@/styles/mixins' as *;
 @use '@/styles/variables' as *;
 
-.slider{
+.slider {
   width: 100%;
-  overflow: hidden;
-  position: relative;
-  &__conteiner{
-    max-width: 1080px;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1080px) 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+
+  &__swiper {
     width: 100%;
-    padding: 0 20px;
-    display: flex;
-    align-items: center;
-    gap: 40px;
-    transition: transform 0.3s ease;
+    min-width: 0;
   }
-  &__arrow_left{
-    position: absolute;
-    top: 60%;
-    left: 2%;
+
+  &__slide {
+    height: auto;
+  }
+
+  &__button {
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 50%;
+    background-color: $white;
     color: $alt-color;
-    font-size: 34px;
-    line-height: 34px;
+    font-size: 20px;
+    cursor: pointer;
+    transition:
+            background-color 0.1s ease,
+            color 0.1s ease,
+            opacity 0.1s ease;
+
+    &:hover {
+      background-color: $alt-color;
+      color: $white;
+    }
   }
-  &__arrow_right{
-    position: absolute;
-    top: 60%;
-    right: 2%;
-    color: $alt-color;
-    font-size: 34px;
-    line-height: 34px;
+
+  &__button_disabled {
+    opacity: 0.35;
+    pointer-events: none;
   }
-  &__card{
-    max-width: 320px;
+
+  &__card {
     width: 100%;
     min-height: 350px;
-    flex-basis: 320px;
-    flex-shrink: 0;
     padding: 25px;
     display: flex;
     flex-direction: column;
@@ -43,62 +53,63 @@
     background-color: $white;
     border-radius: 22px;
   }
-  &__card_title{
+
+  &__card_title {
     display: flex;
     flex-direction: column;
     gap: 12px;
   }
-  &__card_name{
+
+  &__card_name {
     font-size: 1.3rem;
     line-height: 1.3em;
   }
-  &__card_description{
+
+  &__card_description {
     font-weight: 700;
   }
-  &__card_link, &__card_link_arrow{
+
+  &__card_link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__card_link,
+  &__card_link_arrow {
     color: $alt-color;
     transition: color 0.1s ease;
   }
-  &__card_link:hover, &__card_link:hover &__card_link_arrow{
+
+  &__card_link:hover,
+  &__card_link:hover &__card_link_arrow {
     color: $main-color;
   }
 
-  @include adaptive(table){
-    &__arrow_left{
-      font-size: 25px;
-      line-height: 25px;
-    }
-    &__arrow_right{
-      font-size: 25px;
-      line-height: 25px;
+  @include adaptive(table) {
+    grid-template-columns: 36px minmax(0, 1fr) 36px;
+    gap: 14px;
+
+    &__button {
+      width: 36px;
+      height: 36px;
+      font-size: 16px;
     }
   }
-  @include adaptive(mobile){
-    &__conteiner{
-      gap: 60px;
+
+  @include adaptive(mobile) {
+    grid-template-columns: 30px minmax(0, 1fr) 30px;
+    gap: 8px;
+
+    &__button {
+      width: 30px;
+      height: 30px;
+      font-size: 14px;
     }
-    &__card{
-      max-width: 250px;
-      width: 100%;
+
+    &__card {
       min-height: 350px;
-      flex-basis: 250px;
-      flex-shrink: 0;
       padding: 15px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      background-color: $white;
-      border-radius: 22px;
-    }
-    &__arrow_left{
-      left: 1%;
-      font-size: 20px;
-      line-height: 20px;
-    }
-    &__arrow_right{
-      right: 1%;
-      font-size: 20px;
-      line-height: 20px;
     }
   }
 }

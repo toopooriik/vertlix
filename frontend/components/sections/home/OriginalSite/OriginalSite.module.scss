@@ -1,0 +1,99 @@
+@use '@/styles/mixins' as *;
+@use '@/styles/variables' as *;
+
+.original_site {
+  padding: 70px 0;
+  &__content {
+    max-width: 1320px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    flex-wrap: wrap;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 70px;
+    text-decoration: none;
+
+    &:hover {
+      .original_site__logo {
+        filter: grayscale(0);
+        opacity: 1;
+      }
+
+      .original_site__name {
+        color: $alt-color;
+      }
+    }
+  }
+
+  &__logo {
+    width: auto;
+    height: 54px;
+    max-width: 220px;
+    object-fit: contain;
+    filter: grayscale(1);
+    opacity: 0.7;
+    transition:
+            filter 0.2s ease,
+            opacity 0.2s ease;
+  }
+
+  &__name {
+    color: $main-color;
+    font-size: 2.5rem;
+    line-height: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    filter: grayscale(1);
+    opacity: 0.7;
+    transition:
+            color 0.2s ease,
+            opacity 0.2s ease;
+  }
+
+  @include adaptive(table) {
+    &__content {
+      gap: 35px;
+    }
+
+    &__item {
+      min-height: 60px;
+    }
+
+    &__logo {
+      height: 46px;
+      max-width: 180px;
+    }
+
+    &__name {
+      font-size: 2rem;
+      line-height: 2rem;
+    }
+  }
+
+  @include adaptive(mobile) {
+    &__content {
+      gap: 24px;
+    }
+
+    &__item {
+      min-height: 52px;
+    }
+
+    &__logo {
+      height: 38px;
+      max-width: 140px;
+    }
+
+    &__name {
+      font-size: 1.5rem;
+      line-height: 1.5rem;
+    }
+  }
+}

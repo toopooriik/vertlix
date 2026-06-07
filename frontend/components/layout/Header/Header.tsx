@@ -5,7 +5,9 @@ import Image from 'next/image';
 import style from './Header.module.scss';
 import Container from "@/components/layout/Container";
 import Filter from "@/components/ui/filter";
+import Search from '@/components/ui/search';
 import { usePathname } from 'next/navigation';
+
 export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -39,7 +41,7 @@ export default function Header() {
 
                             </div>
                             <div className={style.header__search}>
-                                <input type="text" name={'search'} id={'search'} placeholder={'Найти...'}/>
+                                <Search />
                             </div>
                         </div>
 

@@ -1,107 +1,111 @@
 @use '@/styles/mixins' as *;
 @use '@/styles/variables' as *;
 
-.top_production{
-  &__content{
+.top_production {
+  &__content {
     display: flex;
     flex-direction: column;
     width: 100%;
     max-width: 1320px;
     gap: 25px;
   }
-  &__title{
+
+  &__title {
     font-size: 2.5rem;
     line-height: 2.5rem;
   }
-  &__slider{
+
+  &__slider {
     width: 100%;
-    height: 570px;
-    position: relative;
+    min-height: 570px;
     overflow: hidden;
     border-radius: 25px;
-
-  }
-  &__slider_wrapper{
-    position: absolute;
-    inset: 0;
-    display: flex;
-    justify-content: space-between;
-
-  }
-  &__card{
-    display: flex;
-    width: 100%;
-    flex: 0 0 100%;
-    justify-content: center;
-    gap: 25px;
     background-color: $main-color;
     padding: 50px 25px;
-
   }
-  &__product{
+
+  &__swiper {
+    width: 100%;
+    overflow: visible;
+  }
+
+  &__swiper :global(.swiper-wrapper) {
+    transition-timing-function: linear;
+    align-items: stretch;
+  }
+
+  &__slide {
+    width: 300px;
+    height: auto;
+    display: flex;
+    flex-shrink: 0;
+  }
+
+  &__product {
     @include border;
     border-radius: 25px;
     max-width: 300px;
     width: 100%;
+    min-height: 470px;
+    margin: 0 auto;
     background-color: $white;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 15px;
     padding: 5px 5px 10px;
-
+    user-select: none;
   }
-  &__product_img{
+
+  &__product_img {
     border-radius: 25px;
     width: 100%;
+    height: auto;
+    pointer-events: none;
   }
-  &__product_info{
+
+  &__product_info {
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: 5px;
     padding: 0 10px 10px;
-    h4{
+
+    h4 {
       font-size: 1.3rem;
       line-height: 1.3rem;
     }
   }
 
-  @include adaptive(table){
-
-    &__slider{
-
+  @include adaptive(table) {
+    &__slider {
+      min-height: 540px;
+      padding: 40px 20px;
     }
-    &__slider_wrapper{
 
-    }
-    &__card{
-      justify-content: center;
-    }
-    &__product{
-
-    }
-    &__product_info{
-
+    &__product {
+      min-height: 460px;
     }
   }
 
-  @include adaptive(mobile){
-
-    &__slider{
-
+  @include adaptive(mobile) {
+    &__title {
+      font-size: 2rem;
+      line-height: 2rem;
     }
-    &__slider_wrapper{
 
+    &__slider {
+      min-height: 520px;
+      padding: 30px 15px;
     }
-    &__card{
-      justify-content: center;
-    }
-    &__product{
 
+    &__slide {
+      width: 280px;
     }
-    &__product_info{
 
+    &__product {
+      max-width: 280px;
+      min-height: 450px;
     }
   }
 }
