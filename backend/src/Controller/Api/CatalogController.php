@@ -70,6 +70,15 @@ class CatalogController extends AbstractController
         ));
     }
 
+    #[Route('/products/filter-options', name: 'api_products_filter_options', methods: ['GET'])]
+    public function filterOptions(ProductRepository $productRepository): JsonResponse
+    {
+        return $this->json([
+            'sites' => $productRepository->findDistinctSites(),
+            'sources' => $productRepository->findDistinctSources(),
+        ]);
+    }
+
     private function serializeCategory(Category $category): array
     {
         return [

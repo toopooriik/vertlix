@@ -28,35 +28,15 @@ export default async function ProductDetails({ categoryId, productId }: ProductD
         <section className={style.product_details}>
             <Container>
                 <div className={style.product_details__content}>
-                    <div className={style.product_details__left}>
-                        <div className={style.product_details__image_box}>
-                            <Image
-                                src={product.image}
-                                alt={product.name}
-                                width={500}
-                                height={500}
-                                className={style.product_details__image}
-                                priority
-                            />
-                        </div>
-
-                        <div className={style.product_details__characteristics}>
-                            <h3 className={style.product_details__subtitle}>
-                                Характеристики
-                            </h3>
-
-                            <ul className={style.product_details__characteristics_list}>
-                                {Object.entries(product.characteristics).map(([name, value]) => (
-                                    <li
-                                        className={style.product_details__characteristics_item}
-                                        key={name}
-                                    >
-                                        <span>{name}</span>
-                                        <p>{value}</p>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
+                    <div className={style.product_details__image_box}>
+                        <Image
+                            src={product.image}
+                            alt={product.name}
+                            width={500}
+                            height={500}
+                            className={style.product_details__image}
+                            priority
+                        />
                     </div>
 
                     <div className={style.product_details__right}>
@@ -72,20 +52,6 @@ export default async function ProductDetails({ categoryId, productId }: ProductD
                             <p className={style.product_details__description}>
                                 {product.description}
                             </p>
-
-                            <div className={style.product_details__meta}>
-                                <p>
-                                    <span>Сайт:</span> {product.site}
-                                </p>
-
-                                <p>
-                                    <span>Поставщик:</span> {product.source}
-                                </p>
-
-                                <p>
-                                    <span>Цена:</span> {product.price} ₽
-                                </p>
-                            </div>
                         </div>
 
                         <div className={style.product_details__actions}>
@@ -105,6 +71,24 @@ export default async function ProductDetails({ categoryId, productId }: ProductD
                                 Вернуться в раздел каталога
                             </Link>
                         </div>
+                    </div>
+
+                    <div className={style.product_details__characteristics}>
+                        <h3 className={style.product_details__subtitle}>
+                            Характеристики
+                        </h3>
+
+                        <ul className={style.product_details__characteristics_list}>
+                            {Object.entries(product.characteristics).map(([name, value]) => (
+                                <li
+                                    className={style.product_details__characteristics_item}
+                                    key={name}
+                                >
+                                    <span>{name}</span>
+                                    <p>{value}</p>
+                                </li>
+                            ))}
+                        </ul>
                     </div>
                 </div>
             </Container>

@@ -7,6 +7,11 @@ type CategoryProductsResponse = {
     products: ProductType[];
 };
 
+type ProductFilterOptionsResponse = {
+    sites: string[];
+    sources: string[];
+};
+
 async function requestJson<T>(path: string): Promise<T> {
     const response = await apiFetch(path);
 
@@ -31,4 +36,8 @@ export function getProduct(productId: number) {
 
 export function searchProducts(query: string) {
     return requestJson<ProductType[]>(`/products/search?q=${encodeURIComponent(query)}`);
+}
+
+export function getProductFilterOptions() {
+    return requestJson<ProductFilterOptionsResponse>('/products/filter-options');
 }

@@ -30,4 +30,38 @@ class ProductRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @return string[]
+     */
+    public function findDistinctSites(): array
+    {
+        return array_map(
+            static fn (array $row): string => (string) $row['value'],
+            $this->createQueryBuilder('product')
+                ->select('DISTINCT product.site AS value')
+                ->andWhere('product.site != :empty')
+                ->setParameter('empty', '')
+                ->orderBy('product.site', 'ASC')
+                ->getQuery()
+                ->getScalarResult()
+        );
+    }
+
+    /**
+     * @return string[]
+     */
+    public function findDistinctSources(): array
+    {
+        return array_map(
+            static fn (array $row): string => (string) $row['value'],
+            $this->createQueryBuilder('product')
+                ->select('DISTINCT product.source AS value')
+                ->andWhere('product.source != :empty')
+                ->setParameter('empty', '')
+                ->orderBy('product.source', 'ASC')
+                ->getQuery()
+                ->getScalarResult()
+        );
+    }
 }

@@ -51,7 +51,7 @@ export default function Header() {
                         </button>
                     </div>
                     <div className={`${style.header__filter} ${isOpen ? style.header__filter_open : ''}`}>
-                        <Filter/>
+                        <Filter onSubmitted={() => setIsOpen(false)} />
                     </div>
                 </div>
 

@@ -1,66 +1,102 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 import Container from '@/components/layout/Container';
 import style from './OriginalSite.module.scss';
 
-type OriginalSiteType = {
+type Banner = {
     id: number;
-    name: string;
-    link: string;
-    logo?: string;
+    image: string;
+    alt: string;
+    href: string;
 };
 
-const originalSite: OriginalSiteType[] = [
+const banners: Banner[] = [
     {
         id: 1,
-        name: 'ЛеманаПро',
-        link: 'https://habarovsk.lemanapro.ru/',
-        logo: '/site/lemano.png',
+        image: '/banner1.png',
+        alt: 'Подберите материалы быстрее',
+        href: '/catalog',
     },
     {
         id: 2,
-        name: 'Столичный двор',
-        link: 'https://st-dr.ru/',
-        logo: '/site/stolichniDvor.png',
+        image: '/banner2.png',
+        alt: 'Каталог строительных материалов Veltrix',
+        href: '/catalog',
     },
     {
         id: 3,
-        name: 'Территория ремонта Уровень',
-        link: 'https://khabarovsk.uroven.pro/',
-        logo: '/site/yroven.png',
+        image: '/banner3.png',
+        alt: 'Быстрый переход к подбору материалов',
+        href: '/catalog',
     },
 ];
 
+const SLIDE_DELAY = 5000;
+
 export default function OriginalSite() {
+    const [activeSlide, setActiveSlide] = useState(0);
+
+    useEffect(() => {
+        const timeoutId = window.setTimeout(() => {
+            setActiveSlide((currentSlide) => (currentSlide + 1) % banners.length);
+        }, SLIDE_DELAY);
+
+        return () => window.clearTimeout(timeoutId);
+    }, [activeSlide]);
+
     return (
-        <section className={style.original_site}>
+        <section className={style.original_site} aria-label="Баннеры">
             <Container>
-                <div className={style.original_site__content}>
-                    {originalSite.map((site) => (
-                        <a
-                            href={site.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={style.original_site__item}
-                            key={site.id}
-                            title={site.name}
+                <div className={style.original_site__slider}>
+                    <div className={style.original_site__viewport}>
+                        <div
+                            className={style.original_site__track}
+                            style={{ transform: `translateX(-${activeSlide * 100}%)` }}
                         >
-                            {site.logo ? (
-                                <Image
-                                    src={site.logo}
-                                    alt={site.name}
-                                    title={site.name}
-                                    width={220}
-                                    height={100}
-                                    className={style.original_site__logo}
+                            {banners.map((banner, index) => (
+                                <Link
+                                    href={banner.href}
+                                    className={style.original_site__slide}
+                                    key={banner.id}
+                                    aria-hidden={activeSlide !== index}
+                                    tabIndex={activeSlide === index ? 0 : -1}
+                                >
+                                    <Image
+                                        src={banner.image}
+                                        alt={banner.alt}
+                                        fill
+                                        priority={index === 0}
+                                        sizes="(max-width: 480px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 80px), 1320px"
+                                        className={style.original_site__image}
+                                    />
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className={style.original_site__dots} aria-label="Переключение баннеров">
+                        {banners.map((banner, index) => {
+                            const isActive = activeSlide === index;
+                            const dotClassName = isActive
+                                ? `${style.original_site__dot} ${style['original_site__dot--active']}`
+                                : style.original_site__dot;
+
+                            return (
+                                <button
+                                    type="button"
+                                    className={dotClassName}
+                                    key={banner.id}
+                                    onClick={() => setActiveSlide(index)}
+                                    aria-label={`Показать баннер ${index + 1}`}
+                                    aria-current={isActive}
                                 />
-                            ) : (
-                                <h4 className={style.original_site__name}>
-                                    {site.name}
-                                </h4>
-                            )}
-                        </a>
-                    ))}
+                            );
+                        })}
+                    </div>
                 </div>
             </Container>
         </section>

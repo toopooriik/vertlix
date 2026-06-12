@@ -38,9 +38,98 @@
     line-height: 1.5rem;
   }
 
+  &__filters {
+    @include border;
+    display: grid;
+    grid-template-columns: minmax(220px, 1.4fr) minmax(170px, 1fr) minmax(170px, 1fr) minmax(220px, 1.1fr) auto;
+    gap: 16px;
+    align-items: flex-end;
+    padding: 18px;
+    border-radius: 22px;
+    background-color: $white;
+  }
+
+  &__filter_field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+    color: $main-color;
+    font-size: 0.95rem;
+    font-weight: 700;
+
+    input,
+    select {
+      width: 100%;
+      height: 44px;
+      padding: 0 13px;
+      border: 1px solid rgba($main-color, 0.25);
+      border-radius: 12px;
+      background-color: #f8fbfb;
+      color: $main-color;
+      font: inherit;
+      font-weight: 500;
+      outline: none;
+      transition:
+              border-color 0.15s ease,
+              box-shadow 0.15s ease,
+              background-color 0.15s ease;
+
+      &:focus {
+        border-color: $alt-color;
+        background-color: $white;
+        box-shadow: 0 0 0 3px rgba($alt-color, 0.18);
+      }
+    }
+  }
+
+  &__price_filters {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  &__reset {
+    height: 44px;
+    padding: 0 20px;
+    border-radius: 12px;
+    background-color: $main-color;
+    color: $white;
+    font-weight: 700;
+    transition:
+            background-color 0.15s ease,
+            color 0.15s ease,
+            opacity 0.15s ease;
+
+    &:hover:not(:disabled) {
+      background-color: $alt-color;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+    }
+  }
+
+  &__filter_result {
+    color: $text-color;
+    font-weight: 700;
+  }
+
+  &__empty {
+    @include border;
+    grid-column: 1 / -1;
+    width: 100%;
+    padding: 24px;
+    border-radius: 18px;
+    background-color: $white;
+    color: $text-color;
+    text-align: center;
+  }
+
   &__list {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 300px));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 300px));
     justify-content: center;
     gap: 25px;
   }
@@ -48,37 +137,41 @@
   &__product {
     @include border;
     max-width: 300px;
-    min-width: 300px;
     width: 100%;
-    border-radius: 25px;
+    min-height: 440px;
+    border-radius: 18px;
     background-color: $white;
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    padding: 5px 5px 18px;
+    padding: 8px 8px 18px;
   }
 
   &__product_image_link {
     display: block;
     color: inherit;
+    height: 240px;
+    border-radius: 16px;
+    background-color: #f7f7f7;
+    overflow: hidden;
   }
 
   &__product_img {
     width: 100%;
-    height: auto;
-    border-radius: 25px;
+    height: 100%;
+    object-fit: contain;
+    padding: 12px;
   }
 
   &__product_info {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    padding: 0 12px;
+    gap: 14px;
+    padding: 16px 12px 0;
     flex: 1;
   }
 
   &__product_name {
-    font-size: 1.3rem;
+    font-size: 1.15rem;
     line-height: 1.3rem;
 
     a {
@@ -92,17 +185,11 @@
     }
   }
 
-  &__product_description {
-    color: $text-color;
-    font-size: 0.95rem;
+  &__product_price {
+    color: $main-color;
+    font-size: 1.25rem;
+    font-weight: 700;
     line-height: 1.25rem;
-  }
-
-  &__product_meta {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    color: $text-color;
   }
 
   &__original_link {
@@ -123,6 +210,14 @@
     &__content {
       grid-template-columns: 1fr;
     }
+
+    &__filters {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    &__price_filters {
+      grid-column: span 2;
+    }
   }
 
   @include adaptive(mobile) {
@@ -136,13 +231,21 @@
       line-height: 2rem;
     }
 
+    &__filters,
+    &__price_filters {
+      grid-template-columns: 1fr;
+    }
+
+    &__price_filters {
+      grid-column: auto;
+    }
+
     &__list {
       grid-template-columns: minmax(0, 300px);
       justify-content: center;
     }
 
     &__product {
-      min-width: 0;
       max-width: 300px;
       width: 100%;
     }

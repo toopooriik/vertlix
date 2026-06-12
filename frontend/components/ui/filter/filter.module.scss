@@ -6,7 +6,7 @@
   align-items: flex-end;
   max-width: 1320px;
   width: 100%;
-  gap: 50px;
+  gap: 20px;
   background-color: $white;
   padding: 15px;
   border-radius: 0 0 12px 12px;
@@ -15,49 +15,123 @@
   border-color: $main-color;
 
   &__control {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(180px, 1.2fr) minmax(160px, 1fr) minmax(170px, 1fr) minmax(210px, 1.1fr);
     align-items: flex-end;
-    gap: 50px;
+    gap: 16px;
     flex: 1 1 auto;
     min-width: 0;
   }
 
+  &__field,
   &__min_max_price {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    width: 100%;
-    min-width: 250px;
+    gap: 8px;
+    min-width: 0;
+    color: $main-color;
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+
+  &__field {
+
+    select {
+      width: 100%;
+      height: 40px;
+      padding: 0 12px;
+      border: 1px solid rgba($main-color, 0.25);
+      border-radius: 10px;
+      background-color: #f8fbfb;
+      color: $main-color;
+      font: inherit;
+      font-weight: 500;
+      outline: none;
+      transition:
+              border-color 0.15s ease,
+              box-shadow 0.15s ease,
+              background-color 0.15s ease;
+
+      &:focus {
+        border-color: $alt-color;
+        background-color: $white;
+        box-shadow: 0 0 0 3px rgba($alt-color, 0.18);
+      }
+    }
   }
 
   &__min_max_price_inputs {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
 
-    > * {
-      flex: 1 1 0;
-      min-width: 0;
+    input {
+      width: 100%;
+      height: 40px;
+      padding: 0 12px;
+      border: 1px solid rgba($main-color, 0.25);
+      border-radius: 10px;
+      background-color: #f8fbfb;
+      color: $main-color;
+      font: inherit;
+      font-weight: 500;
+      outline: none;
+      transition:
+              border-color 0.15s ease,
+              box-shadow 0.15s ease,
+              background-color 0.15s ease;
+
+      &:focus {
+        border-color: $alt-color;
+        background-color: $white;
+        box-shadow: 0 0 0 3px rgba($alt-color, 0.18);
+      }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 12px;
+    flex: 0 0 auto;
+  }
+
+  &__button,
+  &__button_secondary {
+    min-height: 40px;
+    padding: 10px 24px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1rem;
+    white-space: nowrap;
+    transition:
+            background-color 0.15s ease,
+            color 0.15s ease,
+            opacity 0.15s ease;
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
     }
   }
 
   &__button {
-    flex: 0 0 auto;
     background-color: $alt-color;
     color: $white;
     outline: 3px solid $alt-color;
-    padding: 10px 45px;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 1.2rem;
-    line-height: 1.2rem;
-    white-space: nowrap;
-    transition:
-            background-color 0.1s ease,
-            color 0.3s ease;
 
-    &:hover {
+    &:hover:not(:disabled) {
+      background-color: $white;
+      color: $main-color;
+    }
+  }
+
+  &__button_secondary {
+    background-color: $main-color;
+    color: $white;
+    outline: 3px solid $main-color;
+
+    &:hover:not(:disabled) {
       background-color: $white;
       color: $main-color;
     }
@@ -65,40 +139,32 @@
 
   @media (max-width: 1180px) {
     flex-wrap: wrap;
-    gap: 20px;
 
     &__control {
-      width: 100%;
-      gap: 20px;
-    }
-
-    &__button {
-      order: 2;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       width: 100%;
       flex: 1 0 100%;
-      padding: 12px 20px;
+    }
+
+    &__actions {
+      width: 100%;
+    }
+
+    &__button,
+    &__button_secondary {
+      flex: 1;
     }
   }
 
   @media (max-width: 760px) {
-    &__control {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 16px;
 
-      > * {
-        width: 100%;
-        max-width: none;
-      }
-    }
-
-    &__min_max_price {
-      min-width: 0;
-    }
-
+    &__control,
     &__min_max_price_inputs {
-      flex-direction: row;
-      flex-wrap: nowrap;
+      grid-template-columns: 1fr;
+    }
+
+    &__actions {
+      flex-direction: column;
     }
   }
 }

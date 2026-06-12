@@ -1,51 +1,209 @@
 'use client';
 
-import {useState, useEffect} from "react";
-import style from './filter.module.scss';
-import {categories} from "@/components/ui/filter/categories";
-import {sites} from '@/components/ui/filter/site';
-import {sources} from '@/components/ui/filter/source';
-import Selector from '@/components/ui/selector/index';
-import {SelectorItem} from "@/components/ui/selector/type";
-import Input from '@/components/ui/input';
+import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 
-export default function Filter(){
-    const [category, setCategory] = useState<SelectorItem | string>('Категории');
-    const [site, setSite] = useState<SelectorItem | string>('Сайт');
-    const [source, setSource] = useState<SelectorItem | string>('Поставщик');
-    const [minPrice, setMinPrice] = useState<string>('');
-    const [maxPrice, setMaxPrice] = useState<string>('');
-    return(
-        <div className={style.filter}>
+import { getCategories, getProductFilterOptions } from '@/src/shared/api/catalog';
+import CategoryType from '@/types/categoryType';
+import style from './filter.module.scss';
+
+type FilterProps = {
+    onSubmitted?: () => void;
+};
+
+function normalizePriceInput(value: string) {
+    return value.replace(/[^\d]/g, '');
+}
+
+function getCurrentCategoryId(pathname: string) {
+    const match = pathname.match(/^\/catalog\/(\d+)/);
+
+    return match?.[1] ?? '';
+}
+
+export default function Filter({ onSubmitted }: FilterProps) {
+    const router = useRouter();
+    const pathname = usePathname();
+    const [categories, setCategories] = useState<CategoryType[]>([]);
+    const [sites, setSites] = useState<string[]>([]);
+    const [sources, setSources] = useState<string[]>([]);
+    const [categoryId, setCategoryId] = useState('');
+    const [site, setSite] = useState('');
+    const [source, setSource] = useState('');
+    const [minPrice, setMinPrice] = useState('');
+    const [maxPrice, setMaxPrice] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        let isActive = true;
+
+        async function loadOptions() {
+            setIsLoading(true);
+
+            try {
+                const [loadedCategories, filterOptions] = await Promise.all([
+                    getCategories(),
+                    getProductFilterOptions(),
+                ]);
+
+                if (!isActive) {
+                    return;
+                }
+
+                setCategories(loadedCategories);
+                setSites(filterOptions.sites);
+                setSources(filterOptions.sources);
+            } finally {
+                if (isActive) {
+                    setIsLoading(false);
+                }
+            }
+        }
+
+        loadOptions();
+
+        return () => {
+            isActive = false;
+        };
+    }, []);
+
+    const currentCategoryId = getCurrentCategoryId(pathname);
+    const targetCategoryId = useMemo(() => {
+        return categoryId || currentCategoryId;
+    }, [categoryId, currentCategoryId]);
+
+    const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        if (!targetCategoryId) {
+            return;
+        }
+
+        const params = new URLSearchParams();
+
+        if (site) {
+            params.set('site', site);
+        }
+
+        if (source) {
+            params.set('source', source);
+        }
+
+        if (minPrice) {
+            params.set('minPrice', minPrice);
+        }
+
+        if (maxPrice) {
+            params.set('maxPrice', maxPrice);
+        }
+
+        const query = params.toString();
+        router.push(`/catalog/${targetCategoryId}${query ? `?${query}` : ''}`);
+        onSubmitted?.();
+    };
+
+    const resetFilters = () => {
+        setSite('');
+        setSource('');
+        setMinPrice('');
+        setMaxPrice('');
+
+        if (targetCategoryId) {
+            router.push(`/catalog/${targetCategoryId}`);
+            onSubmitted?.();
+        }
+    };
+
+    return (
+        <form className={style.filter} onSubmit={handleSubmit}>
             <div className={style.filter__control}>
-                <Selector items={categories} value={category} onChangeAction={setCategory}/>
-                <Selector items={sites} value={site} onChangeAction={setSite}/>
-                <Selector items={sources} value={source} onChangeAction={setSource}/>
+                <label className={style.filter__field}>
+                    <span>Категория</span>
+                    <select
+                        value={categoryId || currentCategoryId}
+                        onChange={(event) => setCategoryId(event.target.value)}
+                        disabled={isLoading}
+                    >
+                        <option value="">Выберите категорию</option>
+                        {categories.map((category) => (
+                            <option value={category.id} key={category.id}>
+                                {category.name}
+                            </option>
+                        ))}
+                    </select>
+                </label>
+
+                <label className={style.filter__field}>
+                    <span>Сайт</span>
+                    <select
+                        value={site}
+                        onChange={(event) => setSite(event.target.value)}
+                        disabled={isLoading}
+                    >
+                        <option value="">Все сайты</option>
+                        {sites.map((option) => (
+                            <option value={option} key={option}>
+                                {option}
+                            </option>
+                        ))}
+                    </select>
+                </label>
+
+                <label className={style.filter__field}>
+                    <span>Поставщик</span>
+                    <select
+                        value={source}
+                        onChange={(event) => setSource(event.target.value)}
+                        disabled={isLoading}
+                    >
+                        <option value="">Все поставщики</option>
+                        {sources.map((option) => (
+                            <option value={option} key={option}>
+                                {option}
+                            </option>
+                        ))}
+                    </select>
+                </label>
+
                 <div className={style.filter__min_max_price}>
                     <p>Диапазон цены</p>
                     <div className={style.filter__min_max_price_inputs}>
-                        <Input
+                        <input
+                            type="text"
+                            inputMode="numeric"
                             value={minPrice}
-                            setValue={setMinPrice}
                             placeholder="От"
-                            maxWidth={'250px'}
-                            height={'30px'}
-                            typeValue={'number'}
+                            onChange={(event) => setMinPrice(normalizePriceInput(event.target.value))}
                         />
-                        <Input
+                        <input
+                            type="text"
+                            inputMode="numeric"
                             value={maxPrice}
-                            setValue={setMaxPrice}
                             placeholder="До"
-                            maxWidth={'250px'}
-                            height={'30px'}
-                            typeValue={'number'}
+                            onChange={(event) => setMaxPrice(normalizePriceInput(event.target.value))}
                         />
                     </div>
                 </div>
             </div>
-            <button className={style.filter__button}>
-                Найти
-            </button>
-        </div>
-    )
+
+            <div className={style.filter__actions}>
+                <button
+                    type="button"
+                    className={style.filter__button_secondary}
+                    onClick={resetFilters}
+                    disabled={!targetCategoryId}
+                >
+                    Сбросить
+                </button>
+
+                <button
+                    type="submit"
+                    className={style.filter__button}
+                    disabled={!targetCategoryId || isLoading}
+                >
+                    Найти
+                </button>
+            </div>
+        </form>
+    );
 }

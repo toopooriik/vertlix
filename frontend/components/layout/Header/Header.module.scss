@@ -15,6 +15,7 @@
     left: 50%;
     transform: translateX(-50%);
     opacity: 0;
+    pointer-events: none;
     transition: opacity 200ms ease,
     top 175ms ease;
 
@@ -23,6 +24,7 @@
   &__filter_open {
     top: 100%;
     opacity: 1;
+    pointer-events: auto;
   }
 
   &__content {
