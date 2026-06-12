@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import Container from '@/components/layout/Container';
-import { productsByCategory } from '@/data/mok/product';
+import { getProduct } from '@/src/shared/api/catalog';
 import style from './ProductDetails.module.scss';
 
 type ProductDetailsProps = {
@@ -11,11 +11,16 @@ type ProductDetailsProps = {
     productId: number;
 };
 
-export default function ProductDetails({ categoryId, productId }: ProductDetailsProps) {
-    const products = productsByCategory[categoryId] ?? [];
-    const product = products.find((item) => item.id === productId);
+export default async function ProductDetails({ categoryId, productId }: ProductDetailsProps) {
+    let product;
 
-    if (!product) {
+    try {
+        product = await getProduct(productId);
+    } catch {
+        notFound();
+    }
+
+    if (product.categoryId !== categoryId) {
         notFound();
     }
 

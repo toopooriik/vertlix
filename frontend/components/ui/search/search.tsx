@@ -1,38 +1,54 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { productsByCategory } from '@/data/mok/product';
+import { searchProducts } from '@/src/shared/api/catalog';
+import ProductType from '@/types/productType';
 import style from './search.module.scss';
-
-const products = Object.values(productsByCategory).flat();
 
 export default function Search() {
     const [query, setQuery] = useState('');
     const [isOpen, setIsOpen] = useState(false);
+    const [products, setProducts] = useState<ProductType[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
     const searchRef = useRef<HTMLDivElement | null>(null);
 
-    const filteredProducts = useMemo(() => {
-        const normalizedQuery = query.trim().toLowerCase();
+    useEffect(() => {
+        const normalizedQuery = query.trim();
 
         if (!normalizedQuery) {
-            return [];
+            setProducts([]);
+            setIsLoading(false);
+            return;
         }
 
-        return products.filter((product) => {
-            const searchText = [
-                product.name,
-                product.category,
-                product.source,
-                product.site,
-            ]
-                .join(' ')
-                .toLowerCase();
+        const controller = new AbortController();
+        const timeoutId = window.setTimeout(async () => {
+            setIsLoading(true);
 
-            return searchText.includes(normalizedQuery);
-        });
+            try {
+                const result = await searchProducts(normalizedQuery);
+
+                if (!controller.signal.aborted) {
+                    setProducts(result);
+                }
+            } catch {
+                if (!controller.signal.aborted) {
+                    setProducts([]);
+                }
+            } finally {
+                if (!controller.signal.aborted) {
+                    setIsLoading(false);
+                }
+            }
+        }, 250);
+
+        return () => {
+            controller.abort();
+            window.clearTimeout(timeoutId);
+        };
     }, [query]);
 
     useEffect(() => {
@@ -78,9 +94,11 @@ export default function Search() {
 
             {isOpen && query.trim() && (
                 <div className={style.search__dropdown}>
-                    {filteredProducts.length > 0 ? (
+                    {isLoading ? (
+                        <p className={style.search__empty}>Идет поиск...</p>
+                    ) : products.length > 0 ? (
                         <div className={style.search__list}>
-                            {filteredProducts.map((product) => (
+                            {products.map((product) => (
                                 <Link
                                     href={`/catalog/${product.categoryId}/${product.id}`}
                                     className={style.search__item}
