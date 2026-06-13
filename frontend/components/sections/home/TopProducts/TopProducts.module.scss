@@ -24,6 +24,11 @@
     padding: 50px 25px;
   }
 
+  &__empty {
+    color: $white;
+    font-weight: 700;
+  }
+
   &__swiper {
     width: 100%;
     overflow: visible;
@@ -57,15 +62,23 @@
     user-select: none;
   }
 
+  &__product_image_link {
+    width: 100%;
+    display: block;
+  }
+
   &__product_img {
     border-radius: 25px;
     width: 100%;
-    height: auto;
+    height: 210px;
+    object-fit: contain;
     pointer-events: none;
+    background-color: $white;
   }
 
   &__product_info {
     width: 100%;
+    flex: 1;
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -77,6 +90,48 @@
     }
   }
 
+  &__product_title_button {
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: $main-color;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  &__product_category,
+  &__product_source,
+  &__product_price {
+    font-size: 0.95rem;
+    line-height: 1.25rem;
+  }
+
+  &__product_price {
+    margin-top: auto;
+    color: $main-color;
+    font-weight: 700;
+  }
+
+  &__product_link {
+    width: 100%;
+    margin-top: 8px;
+    padding: 11px 14px;
+    border-radius: 12px;
+    background-color: $alt-color;
+    color: $white;
+    font-weight: 700;
+    text-align: center;
+    transition:
+            background-color 0.15s ease,
+            color 0.15s ease;
+
+    &:hover {
+      background-color: $main-color;
+      color: $white;
+    }
+  }
+
   @include adaptive(table) {
     &__slider {
       min-height: 540px;
@@ -85,6 +140,10 @@
 
     &__product {
       min-height: 460px;
+    }
+
+    &__product_img {
+      height: 190px;
     }
   }
 
@@ -106,6 +165,10 @@
     &__product {
       max-width: 280px;
       min-height: 450px;
+    }
+
+    &__product_img {
+      height: 180px;
     }
   }
 }

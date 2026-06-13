@@ -10,4 +10,5 @@ export default interface ProductType {
     image: string;
     description: string;
     characteristics: Record<string, string>;
+    viewCount?: number;
 }

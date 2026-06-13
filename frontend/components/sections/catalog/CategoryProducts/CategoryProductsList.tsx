@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { ChangeEvent, useCallback, useMemo, useState } from 'react';
 
 import ProductType from '@/types/productType';
 import style from './CategoryProducts.module.scss';
@@ -46,8 +46,16 @@ export default function CategoryProductsList({
     const [minPrice, setMinPrice] = useState(initialFilters.minPrice ?? '');
     const [maxPrice, setMaxPrice] = useState(initialFilters.maxPrice ?? '');
 
+    const getSourcesForSite = useCallback((selectedSite: string) => {
+        return uniqueSorted(
+            products
+                .filter((product) => !selectedSite || product.site === selectedSite)
+                .map((product) => product.source)
+        );
+    }, [products]);
+
     const sites = useMemo(() => uniqueSorted(products.map((product) => product.site)), [products]);
-    const sources = useMemo(() => uniqueSorted(products.map((product) => product.source)), [products]);
+    const sources = useMemo(() => getSourcesForSite(site), [getSourcesForSite, site]);
 
     const filteredProducts = useMemo(() => {
         const search = normalizeSearch(query);
@@ -97,6 +105,17 @@ export default function CategoryProductsList({
         setMaxPrice('');
     };
 
+    const handleSiteChange = (event: ChangeEvent<HTMLSelectElement>) => {
+        const nextSite = event.target.value;
+        const nextSources = getSourcesForSite(nextSite);
+
+        setSite(nextSite);
+
+        if (source && !nextSources.includes(source)) {
+            setSource('');
+        }
+    };
+
     if (products.length === 0) {
         return <p className={style.category_products__empty}>В этой категории пока нет товаров.</p>;
     }
@@ -116,7 +135,7 @@ export default function CategoryProductsList({
 
                 <label className={style.category_products__filter_field}>
                     <span>Сайт</span>
-                    <select value={site} onChange={(event) => setSite(event.target.value)}>
+                    <select value={site} onChange={handleSiteChange}>
                         <option value="">Все сайты</option>
                         {sites.map((option) => (
                             <option value={option} key={option}>
@@ -128,8 +147,14 @@ export default function CategoryProductsList({
 
                 <label className={style.category_products__filter_field}>
                     <span>Поставщик</span>
-                    <select value={source} onChange={(event) => setSource(event.target.value)}>
-                        <option value="">Все поставщики</option>
+                    <select
+                        value={source}
+                        onChange={(event) => setSource(event.target.value)}
+                        disabled={sources.length === 0}
+                    >
+                        <option value="">
+                            {sources.length > 0 ? 'Все поставщики' : 'Нет поставщиков'}
+                        </option>
                         {sources.map((option) => (
                             <option value={option} key={option}>
                                 {option}

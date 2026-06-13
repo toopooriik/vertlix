@@ -1,22 +1,33 @@
-
+import Container from '@/components/layout/Container';
+import { getPopularCategories } from '@/src/shared/api/catalog';
 import style from './PopularCategories.module.scss';
-import Container from "@/components/layout/Container";
-import Slider from "@/components/ui/slider";
+import PopularCategoriesSlider from './PopularCategoriesSlider';
 
-export default function PopularCategories() {
+export default async function PopularCategories() {
+    const categories = await getPopularCategories(5).catch(() => []);
+
     return (
-        <div className={style.catalog}>
+        <section className={style.catalog}>
             <Container>
                 <div className={style.catalog__content}>
                     <div className={style.catalog__title}>
-                        <h2 className={style.catalog__name}>Популярные категории <br/>товаров</h2>
+                        <h2 className={style.catalog__name}>
+                            Популярные категории <br />товаров
+                        </h2>
                         <p className={style.catalog__description}>
-                            Небольшой слайдер с примерами направлений для быстрого перехода к подбору.
+                            Разделы, в которые пользователи заходят чаще всего.
                         </p>
                     </div>
-                    <Slider/>
+
+                    {categories.length > 0 ? (
+                        <PopularCategoriesSlider categories={categories} />
+                    ) : (
+                        <p className={style.catalog__empty}>
+                            Популярные категории появятся после первых посещений.
+                        </p>
+                    )}
                 </div>
             </Container>
-        </div>
-    )
+        </section>
+    );
 }

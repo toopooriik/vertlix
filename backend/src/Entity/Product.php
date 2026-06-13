@@ -41,6 +41,9 @@ class Product
     #[ORM\Column(type: 'text')]
     private string $description;
 
+    #[ORM\Column(options: ['default' => 0])]
+    private int $viewCount = 0;
+
     #[ORM\OneToMany(
         mappedBy: 'product',
         targetEntity: ProductCharacteristic::class,
@@ -166,6 +169,27 @@ class Product
     public function setDescription(string $description): self
     {
         $this->description = $description;
+        $this->touch();
+
+        return $this;
+    }
+
+    public function getViewCount(): int
+    {
+        return $this->viewCount;
+    }
+
+    public function setViewCount(int $viewCount): self
+    {
+        $this->viewCount = max(0, $viewCount);
+        $this->touch();
+
+        return $this;
+    }
+
+    public function incrementViewCount(): self
+    {
+        ++$this->viewCount;
         $this->touch();
 
         return $this;

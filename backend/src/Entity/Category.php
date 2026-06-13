@@ -25,6 +25,9 @@ class Category
     #[ORM\Column(length: 255)]
     private string $image;
 
+    #[ORM\Column(options: ['default' => 0])]
+    private int $viewCount = 0;
+
     #[ORM\OneToMany(
         mappedBy: 'category',
         targetEntity: Product::class,
@@ -84,6 +87,27 @@ class Category
     public function setImage(string $image): self
     {
         $this->image = $image;
+        $this->touch();
+
+        return $this;
+    }
+
+    public function getViewCount(): int
+    {
+        return $this->viewCount;
+    }
+
+    public function setViewCount(int $viewCount): self
+    {
+        $this->viewCount = max(0, $viewCount);
+        $this->touch();
+
+        return $this;
+    }
+
+    public function incrementViewCount(): self
+    {
+        ++$this->viewCount;
         $this->touch();
 
         return $this;

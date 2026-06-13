@@ -32,13 +32,31 @@ class ProductRepository extends ServiceEntityRepository
     }
 
     /**
+     * @return Product[]
+     */
+    public function findPopular(int $limit = 15): array
+    {
+        return $this->createQueryBuilder('product')
+            ->leftJoin('product.category', 'category')
+            ->addSelect('category')
+            ->orderBy('product.viewCount', 'DESC')
+            ->addOrderBy('product.updatedAt', 'DESC')
+            ->addOrderBy('product.id', 'ASC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @return string[]
      */
-    public function findDistinctSites(): array
+    public function findDistinctSites(?int $categoryId = null): array
     {
+        $queryBuilder = $this->createFilterOptionsQueryBuilder($categoryId);
+
         return array_map(
             static fn (array $row): string => (string) $row['value'],
-            $this->createQueryBuilder('product')
+            $queryBuilder
                 ->select('DISTINCT product.site AS value')
                 ->andWhere('product.site != :empty')
                 ->setParameter('empty', '')
@@ -51,11 +69,13 @@ class ProductRepository extends ServiceEntityRepository
     /**
      * @return string[]
      */
-    public function findDistinctSources(): array
+    public function findDistinctSources(?int $categoryId = null, ?string $site = null): array
     {
+        $queryBuilder = $this->createFilterOptionsQueryBuilder($categoryId, $site);
+
         return array_map(
             static fn (array $row): string => (string) $row['value'],
-            $this->createQueryBuilder('product')
+            $queryBuilder
                 ->select('DISTINCT product.source AS value')
                 ->andWhere('product.source != :empty')
                 ->setParameter('empty', '')
@@ -63,5 +83,25 @@ class ProductRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->getScalarResult()
         );
+    }
+
+    private function createFilterOptionsQueryBuilder(?int $categoryId = null, ?string $site = null): \Doctrine\ORM\QueryBuilder
+    {
+        $queryBuilder = $this->createQueryBuilder('product');
+
+        if ($categoryId !== null) {
+            $queryBuilder
+                ->innerJoin('product.category', 'category')
+                ->andWhere('category.id = :categoryId')
+                ->setParameter('categoryId', $categoryId);
+        }
+
+        if ($site !== null && trim($site) !== '') {
+            $queryBuilder
+                ->andWhere('product.site = :site')
+                ->setParameter('site', trim($site));
+        }
+
+        return $queryBuilder;
     }
 }

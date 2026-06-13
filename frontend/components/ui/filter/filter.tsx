@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
 import { getCategories, getProductFilterOptions } from '@/src/shared/api/catalog';
@@ -32,35 +32,31 @@ export default function Filter({ onSubmitted }: FilterProps) {
     const [source, setSource] = useState('');
     const [minPrice, setMinPrice] = useState('');
     const [maxPrice, setMaxPrice] = useState('');
-    const [isLoading, setIsLoading] = useState(true);
+    const [isCategoriesLoading, setIsCategoriesLoading] = useState(false);
+    const [isOptionsLoading, setIsOptionsLoading] = useState(false);
 
     useEffect(() => {
         let isActive = true;
 
-        async function loadOptions() {
-            setIsLoading(true);
+        async function loadCategories() {
+            setIsCategoriesLoading(true);
 
             try {
-                const [loadedCategories, filterOptions] = await Promise.all([
-                    getCategories(),
-                    getProductFilterOptions(),
-                ]);
+                const loadedCategories = await getCategories();
 
                 if (!isActive) {
                     return;
                 }
 
                 setCategories(loadedCategories);
-                setSites(filterOptions.sites);
-                setSources(filterOptions.sources);
             } finally {
                 if (isActive) {
-                    setIsLoading(false);
+                    setIsCategoriesLoading(false);
                 }
             }
         }
 
-        loadOptions();
+        loadCategories();
 
         return () => {
             isActive = false;
@@ -71,6 +67,58 @@ export default function Filter({ onSubmitted }: FilterProps) {
     const targetCategoryId = useMemo(() => {
         return categoryId || currentCategoryId;
     }, [categoryId, currentCategoryId]);
+    const isLoading = isCategoriesLoading || isOptionsLoading;
+    const isCategorySelectDisabled = isCategoriesLoading || categories.length === 0;
+    const isSiteSelectDisabled = isOptionsLoading || sites.length === 0;
+    const isSourceSelectDisabled = isOptionsLoading || sources.length === 0;
+
+    useEffect(() => {
+        let isActive = true;
+
+        async function loadFilterOptions() {
+            setIsOptionsLoading(true);
+
+            try {
+                const filterOptions = await getProductFilterOptions({
+                    categoryId: targetCategoryId,
+                    site,
+                });
+
+                if (!isActive) {
+                    return;
+                }
+
+                setSites(filterOptions.sites);
+                setSources(filterOptions.sources);
+                setSource((currentSource) => (
+                    currentSource && !filterOptions.sources.includes(currentSource)
+                        ? ''
+                        : currentSource
+                ));
+            } finally {
+                if (isActive) {
+                    setIsOptionsLoading(false);
+                }
+            }
+        }
+
+        loadFilterOptions();
+
+        return () => {
+            isActive = false;
+        };
+    }, [site, targetCategoryId]);
+
+    const handleCategoryChange = (event: ChangeEvent<HTMLSelectElement>) => {
+        setCategoryId(event.target.value);
+        setSite('');
+        setSource('');
+    };
+
+    const handleSiteChange = (event: ChangeEvent<HTMLSelectElement>) => {
+        setSite(event.target.value);
+        setSource('');
+    };
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -121,8 +169,8 @@ export default function Filter({ onSubmitted }: FilterProps) {
                     <span>Категория</span>
                     <select
                         value={categoryId || currentCategoryId}
-                        onChange={(event) => setCategoryId(event.target.value)}
-                        disabled={isLoading}
+                        onChange={handleCategoryChange}
+                        disabled={isCategorySelectDisabled}
                     >
                         <option value="">Выберите категорию</option>
                         {categories.map((category) => (
@@ -137,8 +185,8 @@ export default function Filter({ onSubmitted }: FilterProps) {
                     <span>Сайт</span>
                     <select
                         value={site}
-                        onChange={(event) => setSite(event.target.value)}
-                        disabled={isLoading}
+                        onChange={handleSiteChange}
+                        disabled={isSiteSelectDisabled}
                     >
                         <option value="">Все сайты</option>
                         {sites.map((option) => (
@@ -154,9 +202,11 @@ export default function Filter({ onSubmitted }: FilterProps) {
                     <select
                         value={source}
                         onChange={(event) => setSource(event.target.value)}
-                        disabled={isLoading}
+                        disabled={isSourceSelectDisabled}
                     >
-                        <option value="">Все поставщики</option>
+                        <option value="">
+                            {sources.length > 0 ? 'Все поставщики' : 'Нет поставщиков'}
+                        </option>
                         {sources.map((option) => (
                             <option value={option} key={option}>
                                 {option}

@@ -3,6 +3,7 @@ import { getCategories, getCategoryProducts } from '@/src/shared/api/catalog';
 import style from './CategoryProducts.module.scss';
 import CategoryMenu from '@/components/sections/catalog/CategoryMenu';
 import CategoryProductsList, { ProductFilterValues } from './CategoryProductsList';
+import ViewTracker from '@/components/sections/catalog/ViewTracker';
 
 type CategoryProductsProps = {
     activeCategoryId: number;
@@ -28,6 +29,7 @@ export default async function CategoryProducts({
 
     return (
         <section className={style.category_products}>
+            <ViewTracker id={activeCategory.id} type="category" />
             <Container>
                 <div className={style.category_products__content}>
                     <CategoryMenu

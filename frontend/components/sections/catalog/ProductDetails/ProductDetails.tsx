@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import Container from '@/components/layout/Container';
+import ViewTracker from '@/components/sections/catalog/ViewTracker';
 import { getProduct } from '@/src/shared/api/catalog';
 import style from './ProductDetails.module.scss';
 
@@ -26,6 +27,7 @@ export default async function ProductDetails({ categoryId, productId }: ProductD
 
     return (
         <section className={style.product_details}>
+            <ViewTracker id={product.id} type="product" />
             <Container>
                 <div className={style.product_details__content}>
                     <div className={style.product_details__image_box}>

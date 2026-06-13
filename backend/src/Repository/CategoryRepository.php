@@ -12,4 +12,18 @@ class CategoryRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Category::class);
     }
+
+    /**
+     * @return Category[]
+     */
+    public function findPopular(int $limit = 5): array
+    {
+        return $this->createQueryBuilder('category')
+            ->orderBy('category.viewCount', 'DESC')
+            ->addOrderBy('category.updatedAt', 'DESC')
+            ->addOrderBy('category.id', 'ASC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
 }

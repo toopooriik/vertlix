@@ -3,7 +3,7 @@
 
 .contacts {
   @include flex-centre;
-  height: 100vh;
+  min-height: 100vh;
   &__content {
 
     width: 100%;
@@ -79,7 +79,7 @@
   &__form_input {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 10px;
     width: 50%;
 
     label {
@@ -91,7 +91,8 @@
       }
     }
 
-    input {
+    input,
+    textarea {
       background-color: rgba(0, 0, 0, 0);
       outline: none;
       border: none;
@@ -103,16 +104,62 @@
       transition: border-bottom-color 0.3s ease;
     }
 
+    textarea {
+      min-height: 120px;
+      padding-top: 15px;
+      resize: vertical;
+      border: 5px solid $white;
+      border-top: 0;
+      border-radius: 0 0 15px 15px;
+    }
+
     input:focus {
       border-bottom: 5px solid $alt-color;
     }
-
+    textarea:focus{
+      border: 5px solid $alt-color;
+      border-top: 0;
+    }
   }
 
-  &__form_input:has(input:focus) {
+  &__form_input:has(input:focus),
+  &__form_input:has(textarea:focus) {
     label span{
       border-bottom: 3px solid $alt-color;
     }
+  }
+
+  &__hidden_field {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &__field_error {
+    color: #ffd1d1;
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+
+  &__status {
+    width: 50%;
+    padding: 12px 15px;
+    border-radius: 14px;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  &__status_success {
+    background-color: rgba(255, 255, 255, 0.95);
+    color: $main-color;
+  }
+
+  &__status_error {
+    background-color: rgba(255, 209, 209, 0.95);
+    color: #8a1f1f;
   }
 
   &__full_name {
@@ -135,8 +182,13 @@
     padding: 20px 50px;
     border-radius: 25px;
     transition: all 0.2s ease-in-out;
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.65;
+    }
   }
-  &__submit:hover{
+  &__submit:hover:not(:disabled){
     background-color: $white;
     color: $main-color;
   }
@@ -178,6 +230,10 @@
 
     }
     &__form_input {
+      width: 100%;
+    }
+
+    &__status {
       width: 100%;
     }
     &__full_name {
