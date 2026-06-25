@@ -1,0 +1,303 @@
+ИНСТРУКЦИЯ ПЕРЕНОСА VELTRIX ЧЕРЕЗ DOCKER
+
+WSL/Ubuntu не обязателен. Нужен только Docker и доступ к контейнерам проекта.
+
+Текущие контейнеры проекта:
+- Veltrix_pgsql  - PostgreSQL 16
+- Veltrix_php    - PHP/Symfony backend
+- Veltrix_nginx  - nginx
+- frontend       - Next.js frontend
+
+В проект добавлен основной docker-compose.yml, который создает эти же контейнеры.
+
+База данных:
+- database: db
+- user: db
+- container: Veltrix_pgsql
+
+Все команды выполняй из корня проекта Veltrix.
+
+Проверить, что ты в корне проекта:
+
+Linux/macOS/Git Bash/PowerShell:
+
+docker ps
+
+В списке должен быть контейнер Veltrix_pgsql.
+
+
+1. СОЗДАТЬ ДАМП БД
+
+Создай папку transfer.
+
+Linux/macOS/Git Bash:
+
+rm -rf transfer
+mkdir -p transfer
+
+Windows PowerShell:
+
+if (Test-Path transfer) { Remove-Item -Recurse -Force transfer }
+New-Item -ItemType Directory -Path transfer
+
+Сделай полный бинарный дамп БД со структурой и данными.
+
+Linux/macOS/Git Bash/PowerShell:
+
+docker exec Veltrix_pgsql pg_dump -U db -d db -Fc --no-owner --no-privileges > transfer/veltrix_db.dump
+
+Важно: не используй параметр -t у docker exec для pg_dump в бинарный файл.
+TTY может испортить бинарный dump.
+
+
+2. СОЗДАТЬ ZIP ПРОЕКТА БЕЗ WSL И БЕЗ УСТАНОВКИ ZIP НА ХОСТ
+
+Архив создается через временный Docker-контейнер alpine.
+
+Linux/macOS/Git Bash:
+
+docker run --rm -v "$PWD:/work" -w /work alpine sh -lc "
+  apk add --no-cache zip >/dev/null &&
+  zip -r transfer/Veltrix-full-transfer.zip . \
+    -x 'transfer/Veltrix-full-transfer.zip' \
+       'frontend/node_modules/*' \
+       'frontend/.next/*' \
+       'frontend/out/*' \
+       'frontend/build/*' \
+       'backend/vendor/*' \
+       'backend/var/*' \
+       '.docker/*' \
+       '.git/*' \
+       '.idea/*' \
+       '*.log'
+"
+
+Windows PowerShell:
+
+docker run --rm -v "${PWD}:/work" -w /work alpine sh -lc "
+  apk add --no-cache zip >/dev/null &&
+  zip -r transfer/Veltrix-full-transfer.zip . \
+    -x 'transfer/Veltrix-full-transfer.zip' \
+       'frontend/node_modules/*' \
+       'frontend/.next/*' \
+       'frontend/out/*' \
+       'frontend/build/*' \
+       'backend/vendor/*' \
+       'backend/var/*' \
+       '.docker/*' \
+       '.git/*' \
+       '.idea/*' \
+       '*.log'
+"
+
+Готовый архив:
+
+transfer/Veltrix-full-transfer.zip
+
+
+3. ЧТО ПОПАДЕТ В АРХИВ
+
+Попадет:
+- frontend
+- backend
+- backend/migrations
+- backend/mail
+- backend/.env
+- docker-compose.yml
+- docker-compose.frontend.yml
+- .env проекта
+- transfer/veltrix_db.dump
+- PROJECT_TRANSFER_INSTRUCTIONS.txt
+
+Не попадет:
+- frontend/node_modules
+- frontend/.next
+- backend/vendor
+- backend/var
+- .docker
+- .git
+- .idea
+
+Это правильно: зависимости восстанавливаются заново, а база переносится через dump.
+
+
+4. РАСПАКОВАТЬ НА ДРУГОМ ПК ЧЕРЕЗ DOCKER
+
+Положи Veltrix-full-transfer.zip в папку, где должен быть проект.
+
+Linux/macOS/Git Bash:
+
+mkdir -p Veltrix
+docker run --rm -v "$PWD:/work" -w /work alpine sh -lc "
+  apk add --no-cache unzip >/dev/null &&
+  unzip Veltrix-full-transfer.zip -d Veltrix
+"
+cd Veltrix
+
+Windows PowerShell:
+
+New-Item -ItemType Directory -Path Veltrix -Force
+docker run --rm -v "${PWD}:/work" -w /work alpine sh -lc "
+  apk add --no-cache unzip >/dev/null &&
+  unzip Veltrix-full-transfer.zip -d Veltrix
+"
+Set-Location Veltrix
+
+
+5. ПОДНЯТЬ КОНТЕЙНЕРЫ НА ДРУГОМ ПК
+
+На новом ПК теперь достаточно выполнить из корня проекта:
+
+docker compose up -d
+
+Если порт 80 занят, запусти на другом порту:
+
+Linux/macOS/Git Bash:
+
+HTTP_PORT=8080 docker compose up -d
+
+Windows PowerShell:
+
+$env:HTTP_PORT=8080
+docker compose up -d
+
+После запуска сайт будет доступен:
+
+http://localhost/
+
+или если задан HTTP_PORT=8080:
+
+http://localhost:8080/
+
+Проверка:
+
+docker ps
+
+Должны быть контейнеры:
+- Veltrix_pgsql
+- Veltrix_php
+- Veltrix_nginx
+- frontend
+- mail
+
+Backend использует DATABASE_URL:
+
+postgresql://db:db@postgres:5432/db?serverVersion=16&charset=utf8
+
+Значит внутри docker-сети backend должен видеть PostgreSQL по hostname postgres.
+
+
+6. УСТАНОВИТЬ ЗАВИСИМОСТИ
+
+Backend:
+
+docker exec -w /var/www/html/backend Veltrix_php composer install --no-interaction
+
+Frontend:
+
+docker exec -w /var/www/html/frontend frontend npm install
+
+Если frontend-контейнер сам запускает npm install, ручная команда не нужна.
+
+
+7. ВОССТАНОВИТЬ БД ИЗ ДАМПА
+
+Linux/macOS/Git Bash:
+
+docker exec -i Veltrix_pgsql pg_restore -U db -d db --clean --if-exists --no-owner --no-privileges < transfer/veltrix_db.dump
+
+Windows PowerShell:
+
+cmd /c "docker exec -i Veltrix_pgsql pg_restore -U db -d db --clean --if-exists --no-owner --no-privileges < transfer\veltrix_db.dump"
+
+Если база db еще не создана:
+
+docker exec Veltrix_pgsql createdb -U db db
+
+и повтори импорт.
+
+Очисти Symfony cache:
+
+docker exec -w /var/www/html/backend Veltrix_php php bin/console cache:clear
+
+
+8. ПРОВЕРИТЬ, ЧТО ДАННЫЕ НА МЕСТЕ
+
+Проверить товары:
+
+docker exec -w /var/www/html/backend Veltrix_php php bin/console doctrine:query:sql "SELECT COUNT(*) AS products_count FROM products"
+
+Проверить категории:
+
+docker exec -w /var/www/html/backend Veltrix_php php bin/console doctrine:query:sql "SELECT COUNT(*) AS categories_count FROM categories"
+
+Проверить API routes:
+
+docker exec -w /var/www/html/backend Veltrix_php php bin/console debug:router api_categories_index
+
+
+9. ЕСЛИ НУЖНА ТОЛЬКО СТРУКТУРА БД БЕЗ ДАННЫХ
+
+Лучший вариант для структуры проекта:
+
+docker exec -w /var/www/html/backend Veltrix_php php bin/console doctrine:migrations:migrate --no-interaction
+
+Но для полного переноса текущего состояния проекта используй veltrix_db.dump.
+
+
+10. БЫСТРЫЙ ВАРИАНТ: СОЗДАНИЕ АРХИВА
+
+Linux/macOS/Git Bash:
+
+rm -rf transfer
+mkdir -p transfer
+docker exec Veltrix_pgsql pg_dump -U db -d db -Fc --no-owner --no-privileges > transfer/veltrix_db.dump
+docker run --rm -v "$PWD:/work" -w /work alpine sh -lc "
+  apk add --no-cache zip >/dev/null &&
+  zip -r transfer/Veltrix-full-transfer.zip . \
+    -x 'transfer/Veltrix-full-transfer.zip' \
+       'frontend/node_modules/*' \
+       'frontend/.next/*' \
+       'frontend/out/*' \
+       'frontend/build/*' \
+       'backend/vendor/*' \
+       'backend/var/*' \
+       '.docker/*' \
+       '.git/*' \
+       '.idea/*' \
+       '*.log'
+"
+
+Windows PowerShell:
+
+if (Test-Path transfer) { Remove-Item -Recurse -Force transfer }
+New-Item -ItemType Directory -Path transfer
+docker exec Veltrix_pgsql pg_dump -U db -d db -Fc --no-owner --no-privileges > transfer/veltrix_db.dump
+docker run --rm -v "${PWD}:/work" -w /work alpine sh -lc "
+  apk add --no-cache zip >/dev/null &&
+  zip -r transfer/Veltrix-full-transfer.zip . \
+    -x 'transfer/Veltrix-full-transfer.zip' \
+       'frontend/node_modules/*' \
+       'frontend/.next/*' \
+       'frontend/out/*' \
+       'frontend/build/*' \
+       'backend/vendor/*' \
+       'backend/var/*' \
+       '.docker/*' \
+       '.git/*' \
+       '.idea/*' \
+       '*.log'
+"
+
+
+11. БЫСТРЫЙ ВАРИАНТ: ВОССТАНОВЛЕНИЕ БД
+
+Linux/macOS/Git Bash:
+
+docker exec -i Veltrix_pgsql pg_restore -U db -d db --clean --if-exists --no-owner --no-privileges < transfer/veltrix_db.dump
+docker exec -w /var/www/html/backend Veltrix_php php bin/console cache:clear
+
+Windows PowerShell:
+
+cmd /c "docker exec -i Veltrix_pgsql pg_restore -U db -d db --clean --if-exists --no-owner --no-privileges < transfer\veltrix_db.dump"
+docker exec -w /var/www/html/backend Veltrix_php php bin/console cache:clear

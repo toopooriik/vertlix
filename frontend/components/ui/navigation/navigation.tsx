@@ -34,9 +34,20 @@ const navLinks: LinkType[] = [
 ];
 
 export default function Navigation() {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [menuState, setMenuState] = useState({
+        isOpen: false,
+        pathname: '',
+    });
     const [isMobile, setIsMobile] = useState(false);
     const pathname = usePathname();
+    const isMenuOpen = menuState.isOpen && menuState.pathname === pathname;
+    const isLinkActive = (href: string) => {
+        if (href === '/') {
+            return pathname === href;
+        }
+
+        return pathname === href || pathname.startsWith(`${href}/`);
+    };
 
     useEffect(() => {
         const media = window.matchMedia('(max-width: 480px)');
@@ -48,7 +59,10 @@ export default function Navigation() {
         const handleScroll = () => {
             if (media.matches) return;
 
-            setIsMenuOpen(false);
+            setMenuState((current) => ({
+                ...current,
+                isOpen: false,
+            }));
         };
 
         update();
@@ -62,11 +76,23 @@ export default function Navigation() {
         };
     }, []);
 
-    useEffect(() => {
-        if (!isMobile) return;
+    const closeMenu = () => {
+        setMenuState((current) => ({
+            ...current,
+            isOpen: false,
+        }));
+    };
 
-        setIsMenuOpen(false);
-    }, [pathname, isMobile]);
+    const toggleMenu = () => {
+        setMenuState((current) => {
+            const shouldClose = current.isOpen && current.pathname === pathname;
+
+            return {
+                isOpen: !shouldClose,
+                pathname,
+            };
+        });
+    };
 
     useEffect(() => {
         if (!isMenuOpen) return;
@@ -108,7 +134,7 @@ export default function Navigation() {
                             animate={{ opacity: 0.6 }}
                             exit={{ opacity: 0 }}
                             className={`${style.interlayer} ${style.interlayerActive}`}
-                            onClick={() => setIsMenuOpen(false)}
+                            onClick={closeMenu}
                         />
 
                         <motion.div
@@ -123,22 +149,25 @@ export default function Navigation() {
                                 variants={menuVariants}
                                 transition={{ duration: 0.2, ease: 'easeInOut' }}
                             >
-                                {navLinks.map((link: LinkType) => (
-                                    <Link
-                                        href={link.href}
-                                        className={link.href === pathname ? style.header__active : ''}
-                                        key={link.href}
-                                        onClick={() => {
-                                            if (isMobile) {
-                                                setIsMenuOpen(false);
-                                            }
-                                        }}
-                                    >
-                                        <li className={style.header__navList_li}>
-                                            {link.label}
+                                {navLinks.map((link: LinkType) => {
+                                    const isActive = isLinkActive(link.href);
+
+                                    return (
+                                        <li
+                                            className={`${style.header__navList_li} ${isActive ? style.header__navList_li_active : ''}`}
+                                            key={link.href}
+                                        >
+                                            <Link
+                                                href={link.href}
+                                                className={style.header__navList_link}
+                                                aria-current={isActive ? 'page' : undefined}
+                                                onClick={closeMenu}
+                                            >
+                                                {link.label}
+                                            </Link>
                                         </li>
-                                    </Link>
-                                ))}
+                                    );
+                                })}
                             </motion.ul>
                         </motion.div>
                     </>
@@ -147,7 +176,7 @@ export default function Navigation() {
 
             <Checkbox
                 isOpen={isMenuOpen}
-                onToggle={() => setIsMenuOpen((prev) => !prev)}
+                onToggle={toggleMenu}
             />
         </>
     );
